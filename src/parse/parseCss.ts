@@ -1,15 +1,22 @@
-import { generate, parse } from 'css-tree'
+import { generate, parse, walk } from 'css-tree'
 
-// export const css = `
-// 		.div {
-// 			width: (width) px;
-// 			height: 200px;
-// 			background-color: gray;
-// 		}
-// `
+export const css = `
+		.div {
+			width: (width + 2) px;
+			height: 200px;
+			background-color: gray;
+		}
+`
 
-// export const parseCss = (css: string) => {
-// 	const ast = parse(css)
-// 	const newCss = generate(ast)
-// 	console.log(newCss)
-// }
+export const values = { width: 200 }
+
+export const parseCss = (css: string) => {
+	const ast = parse(css)
+	walk(ast, (node, item, list) => {
+		if (node.type === 'Parentheses') {
+			console.log(generate(node))
+		}
+	})
+	const newCss = generate(ast)
+	console.log(newCss)
+}

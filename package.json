@@ -6,7 +6,7 @@
 	"type": "module",
 	"dependencies": {
 		"async": "^3.2.4",
-		"css-tree": "^2.3.1",
+		"css-tree": "2.0.1",
 		"string-iterator": "^0.0.1"
 	},
 	"devDependencies": {
@@ -25,11 +25,5 @@
 		"dev": "npx webpack"
 	},
 	"author": "",
-	"license": "ISC",
-	"prettier": {
-		"useTabs": true,
-		"tabWidth": 1,
-		"semi": false,
-		"singleQuote": true
-	}
+	"license": "ISC"
 }
