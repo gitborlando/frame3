@@ -11,12 +11,12 @@ export const css = `
 export const values = { width: 200 }
 
 export const parseCss = (css: string) => {
-	const ast = parse(css)
-	walk(ast, (node, item, list) => {
-		if (node.type === 'Parentheses') {
-			console.log(generate(node))
-		}
-	})
-	const newCss = generate(ast)
-	console.log(newCss)
+  const ast = parse(css)
+  walk(ast, (node, item, list) => {
+    if (node.type === 'Parentheses') {
+      console.log(generate(node))
+    }
+  })
+  const newCss = generate(ast)
+  console.log(newCss)
 }
