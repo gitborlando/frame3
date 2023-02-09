@@ -1,1 +1,0 @@
-{"version":3,"file":"index.js","sources":["src/index.ts"],"sourcesContent":["import { a } from \"./parse/parseCss\";\n\nconsole.log(a)\nexport const c = () => {}"],"names":[],"mappings":";;;;;;;CAAA,MAAqC,UAAA,GAAA,OAAA,CAAA,kBAAA,CAAA,CAAA;CAErC,OAAO,CAAC,GAAG,CAAC,UAAA,CAAA,CAAC,CAAC,CAAA;CACP,MAAM,CAAC,GAAG,MAAK,GAAG,CAAA;CAAZ,OAAA,CAAA,CAAC,GAAW,CAAA;;;;;;"}
