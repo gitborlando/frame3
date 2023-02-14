@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div id="div1"></div>
+    <div id="div2"></div>
+    <button id="btn">+1</button>
+  </body>
+  <script src="../../../lib/index.js"></script>
+  <script type="module">
+    const { computed, effect, reactive } = frame
+
+    const count = reactive({ value: 1 })
+    const compute = computed(() => count.value * 2)
+
+    effect(() => {
+      div1.innerText = `count: ${count.value}`
+      div2.innerText = `computed: ${compute.value}`
+    })
+    btn.onclick = () => {
+      count.value++
+    }
+  </script>
+</html>

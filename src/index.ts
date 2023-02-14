@@ -1,3 +1,2 @@
-import { css, parseCss } from './parse/parseCss'
-
-parseCss(css)
+export * from './core'
+export * from './parse'

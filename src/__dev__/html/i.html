@@ -1,0 +1,40 @@
+<html>
+  <body>
+    {a && <button onClick="{() => (width += 20)}">+20</button>}
+  </body>
+  <script src="../index.js"></script>
+  <script>
+    r: width = 100
+    r: [r, g, b] = [255, 255, 255]
+
+    watch: _ = () => {
+      document.title = `width = ${width}`
+    }
+
+    every: _ = () => {}
+
+    once: _ = () => {}
+
+    effect(() => {
+      document.head.innerHTML += `
+					<style>
+						.div {
+							width: ${width}px;
+						}
+					</style>`
+    })
+  </script>
+
+  <style>
+    .div {
+      width: ('width + 2') px;
+      height: 200px;
+      background-color: gray;
+    }
+  </style>
+  <style>
+    .div {
+      width: 200px;
+    }
+  </style>
+</html>
