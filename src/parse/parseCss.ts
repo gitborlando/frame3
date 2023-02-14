@@ -2,6 +2,7 @@ import { generate as cssGenerate, parse as cssParse, walk } from 'css-tree'
 import jsGenerate from '@babel/generator'
 import { parse as jsParse } from '@babel/parser'
 import { additionalJsTexts, parseDotValue, reatciveIdentifers } from './parseJs'
+import { NAME } from '..'
 
 export const parseCss = (css: string) => {
   const ast = cssParse(css)
@@ -28,7 +29,9 @@ export const parseCss = (css: string) => {
 
           const style = '<style>' + selector + ' {' + cssGenerate(declaration) + ';}' + '</style>'
           additionalJsTexts.push(
-            '\nframe.effect(() => {\n  ;(document.head || document.querySelector("html"))?.insertAdjacentHTML(\n    "beforeend", \n    `' +
+            '\n' +
+              NAME +
+              '.effect(() => {\n  ;(document.head || document.querySelector("html"))?.insertAdjacentHTML(\n    "beforeend", \n    `' +
               style +
               '`\n  )\n})'
           )

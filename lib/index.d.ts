@@ -15,6 +15,7 @@ declare module 'frame/core/reactive' {
 
 }
 declare module 'frame/index' {
+  export const NAME = "frame";
   export * from 'frame/core/index';
   export * from 'frame/parse/index';
 

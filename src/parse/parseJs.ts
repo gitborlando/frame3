@@ -2,7 +2,7 @@ import generate from '@babel/generator'
 import * as t from '@babel/types'
 import { parse, ParseResult } from '@babel/parser'
 import traverse, { NodePath } from '@babel/traverse'
-import { runningEnv } from '../utils'
+import { NAME } from '..'
 
 export const additionalJsTexts: string[] = []
 export const reatciveIdentifers = new Set<string>()
@@ -18,7 +18,10 @@ export function parseJs(js: string) {
 export function parseLabelStatement(ast: ParseResult<t.File>) {
   traverse(ast, {
     LabeledStatement(path) {
-      parseRefLabel(path)
+      const { name } = path.node.label
+      if (name === 'ref') return parseRefLabel(path)
+      if (name === 'computed') return parseComputedLabel(path)
+      if (name === 'effect') return parseEffectLabel(path)
     },
   })
   return ast
@@ -37,7 +40,6 @@ export function parseDotValue(ast: ParseResult<t.File>) {
 
 function parseRefLabel(path: NodePath<t.LabeledStatement>) {
   const { node } = path
-  if (node.label.name !== 'ref') return
   if (!t.isExpressionStatement(node.body)) return
   if (!t.isAssignmentExpression(node.body.expression)) return
 
@@ -50,10 +52,42 @@ function parseRefLabel(path: NodePath<t.LabeledStatement>) {
       t.variableDeclarator(
         identifier,
         t.callExpression(
-          t.identifier('frame.reactive' /* runningEnv === 'browser' ? 'frame.reactive' : '$_reactive' */),
+          t.identifier(NAME + '.reactive' /* runningEnv === 'browser' ? 'frame.reactive' : '$_reactive' */),
           [value]
         )
       ),
     ])
   )
+}
+
+function parseComputedLabel(path: NodePath<t.LabeledStatement>) {
+  const { node } = path
+  if (!t.isExpressionStatement(node.body)) return
+  if (!t.isAssignmentExpression(node.body.expression)) return
+
+  const { left: identifier, right: computedExpression } = node.body.expression
+  ;(identifier as any).noNeedDotValue = true
+  reatciveIdentifers.add(generate(identifier).code)
+
+  const computedCaller = t.memberExpression(t.identifier(NAME), t.identifier('computed'))
+  const computedCallback = t.isArrowFunctionExpression(computedExpression)
+    ? computedExpression
+    : t.arrowFunctionExpression([], computedExpression)
+  const computedCall = t.callExpression(computedCaller, [computedCallback])
+  const computedDeclaration = t.variableDeclaration('const', [t.variableDeclarator(identifier, computedCall)])
+
+  path.replaceWith(computedDeclaration)
+}
+
+function parseEffectLabel(path: NodePath<t.LabeledStatement>) {
+  const { node } = path
+  if (!t.isExpressionStatement(node.body)) return
+
+  const effectCaller = t.memberExpression(t.identifier(NAME), t.identifier('effect'))
+  const effectCallback = t.isArrowFunctionExpression(node.body.expression)
+    ? node.body.expression
+    : t.arrowFunctionExpression([], node.body.expression)
+  const effectCall = t.callExpression(effectCaller, [effectCallback])
+
+  path.replaceWith(effectCall)
 }

@@ -1,6 +1,8 @@
 import { additionalJsTexts, parseCss, parseJs } from './parse'
 import { runningEnv } from './utils'
 
+export const NAME = 'frame'
+
 export * from './core'
 export * from './parse'
 

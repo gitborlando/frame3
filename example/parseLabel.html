@@ -1,0 +1,16 @@
+<html>
+  <body>
+    <div id="div1"></div>
+    <div id="div2"></div>
+    <button id="btn">+1</button>
+  </body>
+  <script src="../../../lib/index.js"></script>
+  <script type="text/babel">
+    ref: a = 1
+    computed: b = a * 2
+    effect: div1.innerHTML = a
+    effect: div2.innerHTML = b
+
+    btn.onclick = () => a++
+  </script>
+</html>
