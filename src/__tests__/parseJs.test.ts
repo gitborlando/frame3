@@ -1,6 +1,6 @@
 import generate from '@babel/generator'
 import { parse } from '@babel/parser'
-import { parseLabel } from '../parse'
+import { parseLabelStatement } from '../parse'
 
 describe('parsejs', () => {
   test('parseLabel', () => {
@@ -14,6 +14,6 @@ describe('parsejs', () => {
 
 function testParseLabel(js: string): string {
   const ast = parse(js)
-  parseLabel(ast, 'browser')
+  parseLabelStatement(ast)
   return generate(ast).code
 }

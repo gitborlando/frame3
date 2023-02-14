@@ -34,7 +34,7 @@ declare module 'frame/parse/parseJs' {
   export const additionalJsTexts: string[];
   export const reatciveIdentifers: Set<string>;
   export function parseJs(js: string): string;
-  export function parseLabel(ast: ParseResult<t.File>, env?: 'browser' | 'node'): ParseResult<t.File>;
+  export function parseLabelStatement(ast: ParseResult<t.File>): ParseResult<t.File>;
   export function parseDotValue(ast: ParseResult<t.File>): ParseResult<t.File>;
 
 }

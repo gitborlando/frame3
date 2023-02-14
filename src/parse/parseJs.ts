@@ -1,38 +1,24 @@
 import generate from '@babel/generator'
 import * as t from '@babel/types'
 import { parse, ParseResult } from '@babel/parser'
-import traverse from '@babel/traverse'
+import traverse, { NodePath } from '@babel/traverse'
+import { runningEnv } from '../utils'
 
 export const additionalJsTexts: string[] = []
 export const reatciveIdentifers = new Set<string>()
 
 export function parseJs(js: string) {
   const ast = parse(js)
-  parseLabel(ast)
+  parseLabelStatement(ast)
   parseDotValue(ast)
 
   return generate(ast).code
 }
 
-export function parseLabel(ast: ParseResult<t.File>, env: 'browser' | 'node' = 'browser') {
+export function parseLabelStatement(ast: ParseResult<t.File>) {
   traverse(ast, {
     LabeledStatement(path) {
-      const { node } = path
-      if (node.label.name !== 'ref') return
-      if (!t.isExpressionStatement(node.body)) return
-      if (!t.isAssignmentExpression(node.body.expression)) return
-
-      const { left: identifier, right: value } = node.body.expression
-      ;(identifier as any).noNeedDotValue = true
-      reatciveIdentifers.add(generate(identifier).code)
-      path.replaceWith(
-        t.variableDeclaration('const', [
-          t.variableDeclarator(
-            identifier,
-            t.callExpression(t.identifier(env === 'browser' ? 'frame.reactive' : '$_reactive'), [value])
-          ),
-        ])
-      )
+      parseRefLabel(path)
     },
   })
   return ast
@@ -47,4 +33,27 @@ export function parseDotValue(ast: ParseResult<t.File>) {
     },
   })
   return ast
+}
+
+function parseRefLabel(path: NodePath<t.LabeledStatement>) {
+  const { node } = path
+  if (node.label.name !== 'ref') return
+  if (!t.isExpressionStatement(node.body)) return
+  if (!t.isAssignmentExpression(node.body.expression)) return
+
+  const { left: identifier, right: value } = node.body.expression
+  ;(identifier as any).noNeedDotValue = true
+  reatciveIdentifers.add(generate(identifier).code)
+
+  path.replaceWith(
+    t.variableDeclaration('const', [
+      t.variableDeclarator(
+        identifier,
+        t.callExpression(
+          t.identifier('frame.reactive' /* runningEnv === 'browser' ? 'frame.reactive' : '$_reactive' */),
+          [value]
+        )
+      ),
+    ])
+  )
 }
