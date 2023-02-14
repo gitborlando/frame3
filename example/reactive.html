@@ -15,13 +15,14 @@
   <script type="module">
     const { computed, effect, reactive } = frame
 
-    const count = reactive({ value: 1 })
+    const count = reactive(1)
     const compute = computed(() => count.value * 2)
 
     effect(() => {
       div1.innerText = `count: ${count.value}`
       div2.innerText = `computed: ${compute.value}`
     })
+
     btn.onclick = () => {
       count.value++
     }

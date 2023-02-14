@@ -5,19 +5,21 @@ type IObject = Record<IKey, any>
 const targetObjMap = new WeakMap<object, Set<ICallback> | Map<IKey, Set<ICallback>>>()
 let currentCallback: ICallback | null
 
-export function reactive<Obj extends IObject>(obj: Obj): Obj {
-  return new Proxy<Obj>(obj, {
-    get(target, key) {
-      record(target, key)
-      const value = Reflect.get(target, key)
-      return typeof value === 'object' ? reactive(value as object) : value
-    },
-    set(target, key, value) {
-      Reflect.set(target, key, value)
-      trigger(target, key)
-      return true
-    },
-  })
+export function reactive<Val>(value: Val): { value: Val } {
+  return (function makeReactive<Obj extends IObject>(obj: Obj): Obj {
+    return new Proxy<Obj>(obj, {
+      get(target, key) {
+        record(target, key)
+        const gotValue = Reflect.get(target, key)
+        return typeof gotValue === 'object' ? makeReactive(gotValue as object) : gotValue
+      },
+      set(target, key, value) {
+        Reflect.set(target, key, value)
+        trigger(target, key)
+        return true
+      },
+    })
+  })({ value })
 }
 
 export function effect(cb: ICallback) {
@@ -28,7 +30,7 @@ export function effect(cb: ICallback) {
 }
 
 export function computed<T extends any>(cb: () => T): { value: T } {
-  const result = reactive({ value: undefined as T })
+  const result = reactive(undefined as T)
   effect(() => (result.value = cb()))
   return result
 }

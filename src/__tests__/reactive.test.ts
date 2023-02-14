@@ -1,9 +1,9 @@
 import { computed, effect, reactive } from '../core/reactive'
 
 describe('effect api', () => {
-  test('{ value: 0 } => self plus', () => {
+  test('0 => self plus', () => {
     let result
-    const obj = reactive({ value: 0 })
+    const obj = reactive(0)
     effect(() => {
       result = obj.value
     })
@@ -11,9 +11,9 @@ describe('effect api', () => {
     expect(result).toBe(1)
   })
 
-  test('{ value: [1, 2, 3] } => push, pop, unshift, shift', () => {
+  test('[1, 2, 3] => push, pop, unshift, shift', () => {
     let result
-    const obj = reactive({ value: [1, 2, 3] })
+    const obj = reactive([1, 2, 3])
     effect(() => {
       result = obj.value
     })
@@ -26,9 +26,9 @@ describe('effect api', () => {
 })
 
 describe('computed api', () => {
-  test('{ value: 1 } => self multiply', () => {
+  test('1 => multiply 2', () => {
     let result
-    const obj = reactive({ value: 1 })
+    const obj = reactive(1)
     const compute = computed(() => obj.value * 2)
     effect(() => {
       result = compute.value
