@@ -1,67 +1,10 @@
-import { generate, parse, walk } from 'css-tree'
-import { isNumber } from 'lodash'
-
-export const css = `
-		.div {
-			width: (width + 2) px;
-			height: 200px;
-			background-color: gray;
-		}
-`
-
-export const values = { width: 200 }
+import { generate as cssGenerate, parse as cssParse, walk } from 'css-tree'
+import jsGenerate from '@babel/generator'
+import { parse as jsParse } from '@babel/parser'
+import { additionalJsTexts, parseDotValue, reatciveIdentifers } from './parseJs'
 
 export const parseCss = (css: string) => {
-  const ast = parse(css)
-  // walk(ast, {
-  //   visit: 'Declaration',
-  //   enter(node) {
-  //     if (node.value.type === 'Value') {
-  //       const parentheses = [...node.value.children].find((i) => i.type === 'Parentheses')
-  //       if (!parentheses) return
-
-  //       const repalcer = parentheses as any
-  //       const value = new Function('v', `with(v){return ${generate(repalcer)}}`)(values)
-
-  //       if (isNumber(value)) {
-  //         repalcer.type = 'Number'
-  //         repalcer.value = JSON.stringify(value)
-  //       } else {
-  //         repalcer.type = 'Identifier'
-  //         repalcer.name = JSON.stringify(value)
-  //       }
-
-  //       console.log(node)
-  //     }
-  //   },
-  // })
-  // walk(ast, {
-  //   visit: 'Block',
-  //   enter(block) {
-  //     walk(block, {
-  //       visit: 'Declaration',
-  //       enter(node) {
-  //         if (node.value.type === 'Value') {
-  //           const parentheses = [...node.value.children].find((i) => i.type === 'Parentheses')
-  //           if (!parentheses) return
-
-  //           const repalcer = parentheses as any
-  //           const value = new Function('v', `with(v){return ${generate(repalcer)}}`)(values)
-
-  //           if (isNumber(value)) {
-  //             repalcer.type = 'Number'
-  //             repalcer.value = JSON.stringify(value)
-  //           } else {
-  //             repalcer.type = 'Identifier'
-  //             repalcer.name = JSON.stringify(value)
-  //           }
-
-  //           console.log(generate(block))
-  //         }
-  //       },
-  //     })
-  //   },
-  // })
+  const ast = cssParse(css)
 
   walk(ast, {
     visit: 'Rule',
@@ -70,27 +13,31 @@ export const parseCss = (css: string) => {
       walk(block, {
         visit: 'Declaration',
         enter(declaration) {
-          if (declaration.value.type === 'Value') {
-            const parentheses = [...declaration.value.children].find((i) => i.type === 'Parentheses')
-            if (!parentheses) return
-            console.log(generate(parentheses))
-            const repalcer = parentheses as any
-            const value = new Function('v', `with(v){return ${generate(repalcer)}}`)(values)
+          if (declaration.value.type !== 'Value') return
+          const parentheses = [...declaration.value.children].find((i) => i.type === 'Parentheses')
+          if (!parentheses) return
 
-            if (isNumber(value)) {
-              repalcer.type = 'Number'
-              repalcer.value = JSON.stringify(value)
-            } else {
-              repalcer.type = 'Identifier'
-              repalcer.name = JSON.stringify(value)
-            }
+          const selector = cssGenerate(prelude)
+          const parenthesesRawString = cssGenerate(parentheses)
+            .replace(/^\(('|"|`)?/, '')
+            .replace(/('|"|`)?\)$/, '')
+          const dealedParentheses = jsGenerate(parseDotValue(jsParse(parenthesesRawString))).code
 
-            console.log(generate(prelude), generate(declaration))
-          }
+          ;(parentheses as any).type = 'Raw'
+          ;(parentheses as any).value = '${' + dealedParentheses.replace(/;$/, '') + '}'
+
+          const style = '<style>' + selector + ' {' + cssGenerate(declaration) + ';}' + '</style>'
+          additionalJsTexts.push(
+            '\nframe.effect(() => {\n  ;(document.head || document.querySelector("html"))?.insertAdjacentHTML(\n    "beforeend", \n    `' +
+              style +
+              '`\n  )\n})'
+          )
+
+          declaration.value.children.clear()
         },
       })
     },
   })
-  const newCss = generate(ast)
-  console.log(newCss)
+  const newCss = cssGenerate(ast)
+  return newCss
 }

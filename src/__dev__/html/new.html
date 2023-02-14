@@ -1,0 +1,26 @@
+<html>
+  <body></body>
+  <script src="../../../lib/index.js"></script>
+  <script type="text/babel">
+    ref: a = 0
+    effect: () => (document.title = a)
+
+    jsx: <button className="btn" onClick={() => a++}>
+      {a}
+    </button>
+
+    effect(() => {
+      document.head.innerHTML += `
+					<style>
+						.div {
+							width: ${width + 2}px;
+						}
+					</style>`
+    })
+  </script>
+  <style>
+    .btn {
+      background-color: blueviolet;
+    }
+  </style>
+</html>

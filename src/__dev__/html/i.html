@@ -14,27 +14,5 @@
     every: _ = () => {}
 
     once: _ = () => {}
-
-    effect(() => {
-      document.head.innerHTML += `
-					<style>
-						.div {
-							width: ${width}px;
-						}
-					</style>`
-    })
   </script>
-
-  <style>
-    .div {
-      width: ('width + 2') px;
-      height: 200px;
-      background-color: gray;
-    }
-  </style>
-  <style>
-    .div {
-      width: 200px;
-    }
-  </style>
 </html>

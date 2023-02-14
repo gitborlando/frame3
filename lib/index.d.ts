@@ -25,20 +25,17 @@ declare module 'frame/parse/index' {
 
 }
 declare module 'frame/parse/parseCss' {
-  export const css = "\n\t\t.div {\n\t\t\twidth: (width + 2) px;\n\t\t\theight: 200px;\n\t\t\tbackground-color: gray;\n\t\t}\n";
-  export const values: {
-      width: number;
-  };
-  export const parseCss: (css: string) => void;
+  export const parseCss: (css: string) => string;
 
 }
 declare module 'frame/parse/parseJs' {
   import * as t from '@babel/types';
   import { ParseResult } from '@babel/parser';
+  export const additionalJsTexts: string[];
   export const reatciveIdentifers: Set<string>;
   export function parseJs(js: string): string;
-  export function parseLabel(ast: ParseResult<t.File>, env?: 'browser' | 'node'): void;
-  export function parseDotValue(ast: ParseResult<t.File>): void;
+  export function parseLabel(ast: ParseResult<t.File>, env?: 'browser' | 'node'): ParseResult<t.File>;
+  export function parseDotValue(ast: ParseResult<t.File>): ParseResult<t.File>;
 
 }
 declare module 'frame/utils' {
