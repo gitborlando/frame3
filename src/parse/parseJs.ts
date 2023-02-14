@@ -3,12 +3,13 @@ import * as t from '@babel/types'
 import { parse, ParseResult } from '@babel/parser'
 import traverse from '@babel/traverse'
 
-export const exposeValueMap = new Map<string, any>()
+export const reatciveIdentifers = new Set<string>()
 
 export function parseJs(js: string) {
   const ast = parse(js)
 
   parseLabel(ast)
+  parseDotValue(ast)
 
   const { code } = generate(ast)
   return code
@@ -23,6 +24,7 @@ export function parseLabel(ast: ParseResult<t.File>, env: 'browser' | 'node' = '
       if (!t.isAssignmentExpression(node.body.expression)) return
 
       const { left: identifier, right: value } = node.body.expression
+      reatciveIdentifers.add(generate(identifier).code)
       path.replaceWith(
         t.variableDeclaration('const', [
           t.variableDeclarator(
@@ -31,6 +33,16 @@ export function parseLabel(ast: ParseResult<t.File>, env: 'browser' | 'node' = '
           ),
         ])
       )
+    },
+  })
+}
+
+export function parseDotValue(ast: ParseResult<t.File>) {
+  traverse(ast, {
+    Identifier(path) {
+      if (!reatciveIdentifers.has(path.node.name) || !path.isReferenced()) return
+      path.replaceWith(t.memberExpression(path.node, t.identifier('value')))
+      path.skip()
     },
   })
 }

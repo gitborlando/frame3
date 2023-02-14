@@ -35,9 +35,10 @@ declare module 'frame/parse/parseCss' {
 declare module 'frame/parse/parseJs' {
   import * as t from '@babel/types';
   import { ParseResult } from '@babel/parser';
-  export const exposeValueMap: Map<string, any>;
+  export const reatciveIdentifers: Set<string>;
   export function parseJs(js: string): string;
   export function parseLabel(ast: ParseResult<t.File>, env?: 'browser' | 'node'): void;
+  export function parseDotValue(ast: ParseResult<t.File>): void;
 
 }
 declare module 'frame/utils' {

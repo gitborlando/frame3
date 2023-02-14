@@ -1,9 +1,11 @@
 <html>
-  <body></body>
+  <body>
+    <button id="btn"></button>
+  </body>
   <script src="../../../lib/index.js"></script>
   <script type="text/babel">
-    ref: a = 123
-
-    console.log(a.value)
+    ref: a = 1
+    btn.onclick = () => a++
+    frame.effect(() => (btn.innerHTML = a))
   </script>
 </html>
