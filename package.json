@@ -6,9 +6,17 @@
   "types": "./lib/index.d.ts",
   "type": "module",
   "dependencies": {
+    "@babel/core": "^7.20.12",
+    "@babel/generator": "^7.20.14",
+    "@babel/parser": "^7.20.15",
+    "@babel/template": "^7.20.7",
+    "@babel/traverse": "^7.20.13",
+    "@babel/types": "^7.20.7",
     "async": "^3.2.4",
+    "buffer": "^6.0.3",
     "css-tree": "2.0.1",
     "lodash": "^4.17.21",
+    "process": "^0.11.10",
     "string-iterator": "^0.0.1"
   },
   "devDependencies": {

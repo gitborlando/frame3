@@ -1,4 +1,5 @@
 const NpmDtsPlugin = require('npm-dts-webpack-plugin')
+const { ProvidePlugin } = require('webpack')
 
 module.exports = {
   mode: 'production',
@@ -22,6 +23,12 @@ module.exports = {
       },
     ],
   },
-  plugins: [new NpmDtsPlugin({ output: './lib/index.d.ts' })],
+  plugins: [
+    new NpmDtsPlugin({ output: './lib/index.d.ts' }),
+    new ProvidePlugin({
+      process: 'process/browser',
+      Buffer: ['buffer', 'Buffer'],
+    }),
+  ],
   watch: true,
 }

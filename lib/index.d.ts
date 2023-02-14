@@ -20,6 +20,7 @@ declare module 'frame/index' {
 }
 declare module 'frame/parse/index' {
   export * from 'frame/parse/parseCss'
+  export * from 'frame/parse/parseJs'
 }
 declare module 'frame/parse/parseCss' {
   export const css =
@@ -28,6 +29,16 @@ declare module 'frame/parse/parseCss' {
     width: number
   }
   export const parseCss: (css: string) => void
+}
+declare module 'frame/parse/parseJs' {
+  import * as t from '@babel/types'
+  import { ParseResult } from '@babel/parser'
+  export const exposeValueMap: Map<string, any>
+  export function parseJs(js: string): void
+  export function parseLabel(ast: ParseResult<t.File>, env?: 'browser' | 'node'): void
+}
+declare module 'frame/__tests__/parseJs.test' {
+  export {}
 }
 declare module 'frame/__tests__/reactive.test' {
   export {}
