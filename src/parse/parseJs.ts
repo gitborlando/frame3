@@ -10,7 +10,8 @@ export function parseJs(js: string) {
 
   parseLabel(ast)
 
-  console.log(generate(ast).code)
+  const { code } = generate(ast)
+  return code
 }
 
 export function parseLabel(ast: ParseResult<t.File>, env: 'browser' | 'node' = 'browser') {
