@@ -1,0 +1,41 @@
+<html>
+  <script src="../../../lib/index.js"></script>
+  <script type="text/babel">
+    jsx: <button>123</button>
+  </script>
+  <script>
+    const template = '<button></button>'
+    h()
+  </script>
+  <script>
+    import { template as _$template } from 'solid-js/web'
+    import { delegateEvents as _$delegateEvents } from 'solid-js/web'
+    import { createComponent as _$createComponent } from 'solid-js/web'
+    import { insert as _$insert } from 'solid-js/web'
+    import { memo as _$memo } from 'solid-js/web'
+    const _tmpl$ = /*#__PURE__*/ _$template(`<button type="button"></button>`, 2),
+      _tmpl$2 = /*#__PURE__*/ _$template(`<button>show</button>`, 2)
+    import { render } from 'solid-js/web'
+    import { createSignal } from 'solid-js'
+    function Counter() {
+      const [count, setCount] = createSignal(1)
+      const increment = () => setCount(count() === 2 ? 1 : 2)
+      return [
+        _$memo(
+          (() => {
+            const _c$ = _$memo(() => count() === 1)
+            return () => _c$() && _tmpl$2.cloneNode(true)
+          })()
+        ),
+        (() => {
+          const _el$ = _tmpl$.cloneNode(true)
+          _el$.$$click = increment
+          _$insert(_el$, count)
+          return _el$
+        })(),
+      ]
+    }
+    render(() => _$createComponent(Counter, {}), document.getElementById('app'))
+    _$delegateEvents(['click'])
+  </script>
+</html>

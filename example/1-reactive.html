@@ -8,16 +8,16 @@
   <script type="module">
     const { computed, effect, reactive } = frame
 
-    const count = reactive(1)
-    const compute = computed(() => count.value * 2)
+    const count = reactive({ a: 1 })
+    const compute = computed(() => count.value.a * 2)
 
     effect(() => {
-      div1.innerText = `count: ${count.value}`
+      div1.innerText = `count: ${count.value.a}`
       div2.innerText = `computed: ${compute.value}`
     })
 
     btn.onclick = () => {
-      count.value++
+      count.value.a++
     }
   </script>
 </html>
