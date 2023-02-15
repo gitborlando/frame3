@@ -47,17 +47,10 @@ function parseRefLabel(path: NodePath<t.LabeledStatement>) {
   ;(identifier as any).noNeedDotValue = true
   reatciveIdentifers.add(generate(identifier).code)
 
-  path.replaceWith(
-    t.variableDeclaration('const', [
-      t.variableDeclarator(
-        identifier,
-        t.callExpression(
-          t.identifier(NAME + '.reactive' /* runningEnv === 'browser' ? 'frame.reactive' : '$_reactive' */),
-          [value]
-        )
-      ),
-    ])
-  )
+  const reactiveCall = t.callExpression(t.identifier(NAME + '.reactive'), [value])
+  const reactiveDeclaration = t.variableDeclaration('const', [t.variableDeclarator(identifier, reactiveCall)])
+
+  path.replaceWith(reactiveDeclaration)
 }
 
 function parseComputedLabel(path: NodePath<t.LabeledStatement>) {
