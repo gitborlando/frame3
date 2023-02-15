@@ -1,0 +1,31 @@
+<script>
+  ref: a = 0
+  effect: document.title = a
+
+  jsx: <button className="btn" onClick={() => a++}>
+    {a}
+  </button>
+</script>
+
+<style>
+  .btn {
+    background-color: blueviolet;
+  }
+</style>
+
+<script>
+  export default Component = (props) => {
+    ref: a = 0
+    effect: document.title = a
+
+    const button_1 = fromTemplate('<button></button>')
+
+    return [
+      effect(() => {
+        button_1.onclick = () => a++
+        button_1.innerHTML = a
+      }),
+    ]
+  }
+  Component.style = styleString
+</script>

@@ -13,7 +13,8 @@ runningEnv === 'browser' &&
 
     const parsedJs = parseJs(script.innerHTML)
 
-    const styles = document.querySelectorAll('style[reactive]')
+    let styles = [...document.querySelectorAll('style[reactive]')]
+    if (!styles.length) styles = [...document.querySelectorAll('style')]
     styles.forEach((style) => {
       const newStyle = document.createElement('style')
       newStyle.innerHTML = parseCss(style.innerHTML)

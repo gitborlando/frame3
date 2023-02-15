@@ -23,6 +23,8 @@ declare module 'frame/index' {
 declare module 'frame/parse/index' {
   export * from 'frame/parse/parseCss';
   export * from 'frame/parse/parseJs';
+  export * from 'frame/parse/parseJsx';
+  export * from 'frame/parse/parseLabel';
 
 }
 declare module 'frame/parse/parseCss' {
@@ -35,15 +37,24 @@ declare module 'frame/parse/parseJs' {
   export const additionalJsTexts: string[];
   export const reatciveIdentifers: Set<string>;
   export function parseJs(js: string): string;
-  export function parseLabelStatement(ast: ParseResult<t.File>): ParseResult<t.File>;
   export function parseDotValue(ast: ParseResult<t.File>): ParseResult<t.File>;
+
+}
+declare module 'frame/parse/parseJsx' {
+  export function parseJsx(): void;
+
+}
+declare module 'frame/parse/parseLabel' {
+  import * as t from '@babel/types';
+  import { ParseResult } from '@babel/parser';
+  export function parseLabelStatement(ast: ParseResult<t.File>): ParseResult<t.File>;
 
 }
 declare module 'frame/utils' {
   export const runningEnv: string;
 
 }
-declare module 'frame/__tests__/parseJs.test' {
+declare module 'frame/__tests__/parseJsx.test' {
   export {};
 
 }
