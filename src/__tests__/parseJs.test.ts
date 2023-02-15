@@ -1,6 +1,6 @@
 import generate from '@babel/generator'
-import { parse } from '@babel/parser'
-import { parseLabelStatement } from '../parse'
+import { parse as babelParse } from '@babel/parser'
+import { parseDotValue, parseDotValue as _parseDotValue, parseLabelStatement, reatciveIdentifers } from '../parse'
 
 describe('parseLabel', () => {
   test('ref label', () => {
@@ -33,8 +33,23 @@ describe('parseLabel', () => {
   })
 })
 
+describe('parseDotValue', () => {
+  reatciveIdentifers.add('a')
+  test('parseDotValue', () => {
+    expect(testParseDotValue('a')).toBe('a.value;')
+    expect(testParseDotValue('a.b')).toBe('a.value.b;')
+    expect(testParseDotValue('a[0]')).toBe('a.value[0];')
+  })
+})
+
 function testParseLabel(js: string): string {
-  const ast = parse(js)
+  const ast = babelParse(js)
   parseLabelStatement(ast)
+  return generate(ast).code
+}
+
+function testParseDotValue(js: string): string {
+  const ast = babelParse(js)
+  parseDotValue(ast)
   return generate(ast).code
 }
