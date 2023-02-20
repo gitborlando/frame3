@@ -14,7 +14,7 @@ interface IJsx {
 const jsxStack: IJsx[] = []
 const getJsxStackLastOne = () => jsxStack[jsxStack.length - 1]
 
-export function createJsxtraverseOption(): TraverseOptions<any> {
+export function babelTraverseJSXOption(): TraverseOptions<any> {
   return {
     JSXOpeningElement(path) {
       const { node, parentPath } = path

@@ -3,7 +3,7 @@ import * as t from '@babel/types'
 import { cssParsers } from './parse-js'
 import { babelGenerate, babelTemplate, FrameApi, parseState, propIdentifiers, reatciveIdentifers } from './shared'
 
-export function parseLabelStatement(): TraverseOptions<t.Node> {
+export function babelTraverseLabelOption(): TraverseOptions<t.Node> {
   return {
     LabeledStatement(path) {
       const { name } = path.node.label

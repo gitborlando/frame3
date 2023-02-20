@@ -1,11 +1,6 @@
 import generate from '@babel/generator'
 import { parse as babelParse } from '@babel/parser'
-import {
-  babelParseDotValueOption,
-  babelParseDotValueOption as _parseDotValue,
-  parseLabelStatement,
-  reatciveIdentifers,
-} from '../parse'
+import { babelTraverse, babelTraverseDotValueOption, babelTraverseLabelOption, reatciveIdentifers } from '../parse'
 
 describe('parseLabel', () => {
   test('ref label', () => {
@@ -49,12 +44,12 @@ describe('parseDotValue', () => {
 
 function testParseLabel(js: string): string {
   const ast = babelParse(js)
-  parseLabelStatement(ast)
+  babelTraverse(ast, babelTraverseLabelOption())
   return generate(ast).code
 }
 
 function testParseDotValue(js: string): string {
   const ast = babelParse(js)
-  babelParseDotValueOption(ast)
+  babelTraverse(ast, babelTraverseDotValueOption())
   return generate(ast).code
 }
