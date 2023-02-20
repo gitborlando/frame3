@@ -1,0 +1,19 @@
+<script>
+  import Button from './kjklsd.htm'
+
+  props: {
+    a, b
+  }
+  ref: a = 0
+  effect: document.title = a
+
+  jsx: <button className="btn" onClick={() => a++}>
+    {a}
+  </button>
+</script>
+
+<style>
+  .btn {
+    background-color: blueviolet;
+  }
+</style>

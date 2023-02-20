@@ -4,20 +4,58 @@
     <div id="div2"></div>
     <button id="btn">+1</button>
   </body>
-  <script src="../../../lib/index.js"></script>
-  <script type="module">
-    const { computed, effect, reactive } = frame
+  <script src="../lib/index.js"></script>
+  <!-- <script type="module">
+    const { computed, effect, reactive } = frame3
 
-    const count = reactive({ a: 1 })
+    const count = reactive({ a: 'abc' })
     const compute = computed(() => count.value.a * 2)
 
+    let i = 0
     effect(() => {
-      div1.innerText = `count: ${count.value.a}`
-      div2.innerText = `computed: ${compute.value}`
+      console.log(compute.value)
     })
+    // 直接xx会触发get, 而() => xx这样不会
 
     btn.onclick = () => {
       count.value.a++
     }
+  </script> -->
+
+  <script type="module">
+    const { computed, effect, reactive } = frame3
+
+    const count = reactive(0)
+    const compute = computed(() => count.value * 2)
+    const compute2 = computed(() => () => 'abc')
+
+    let o = {
+      c: compute2.value,
+    }
+    effect(() => {
+      console.log(compute.value)
+      console.log(compute2.value === o.c)
+    })
+    // 直接xx会触发get, 而() => xx这样不会
+
+    btn.onclick = () => {
+      count.value++
+    }
   </script>
+
+  <!-- <script type="text/babel">
+    console.log('-----------------------------------------------------------------------')
+    ref: a = 0
+    effect: console.log((() => a)())
+
+    btn.onclick = () => a++
+  </script>
+
+  <script type="text/babel">
+    console.log('-----------------------------------------------------------------------')
+    ref: a = 0
+    frame3.effect((b) => console.log(a, b.i++), { i: 123 })
+
+    btn.onclick = () => a++
+  </script> -->
 </html>

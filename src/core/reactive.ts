@@ -1,5 +1,5 @@
 type IKey = string | symbol
-type ICallback = () => void
+type ICallback<T = any> = (prevState?: any) => T
 type IObject = Record<IKey, any>
 
 const targetObjMap = new WeakMap<object, Set<ICallback> | Map<IKey, Set<ICallback>>>()
@@ -22,14 +22,14 @@ export function reactive<Val>(value: Val): { value: Val } {
   })({ value })
 }
 
-export function effect(cb: ICallback) {
-  currentCallback = cb
-  const res = cb()
+export function effect<T>(cb: ICallback<T>, lastState?: Record<string, any>) {
+  currentCallback = () => cb(lastState)
+  const res = currentCallback(lastState)
   currentCallback = null
   return res
 }
 
-export function computed<T extends any>(cb: () => T): { value: T } {
+export function computed<T>(cb: ICallback<T>) {
   const result = reactive(undefined as T)
   effect(() => (result.value = cb()))
   return result
@@ -63,9 +63,9 @@ function trigger(targetObj: IObject, key: IKey) {
   if (Array.isArray(targetObj)) {
     const array = targetObj
     const callbacks = targetObjMap.get(array) as Set<ICallback> | undefined
-    callbacks?.forEach((callback) => callback())
+    callbacks?.forEach((callback) => callback !== currentCallback && callback())
   } else {
     const keyTocallbacksMap = targetObjMap.get(targetObj) as Map<IKey, Set<ICallback>> | undefined
-    keyTocallbacksMap?.get(key)?.forEach((callback) => callback())
+    keyTocallbacksMap?.get(key)?.forEach((callback) => callback !== currentCallback && callback())
   }
 }

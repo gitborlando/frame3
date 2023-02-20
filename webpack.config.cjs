@@ -1,11 +1,12 @@
 const NpmDtsPlugin = require('npm-dts-webpack-plugin')
 const { ProvidePlugin } = require('webpack')
+const CompressionPlugin = require('compression-webpack-plugin')
 
 module.exports = {
   mode: 'production',
   entry: './src/index.ts',
   output: {
-    path: __dirname + '/lib',
+    path: __dirname + '/dist',
     filename: 'index.js',
     library: 'frame',
     libraryTarget: 'umd',
@@ -24,11 +25,12 @@ module.exports = {
     ],
   },
   plugins: [
-    new NpmDtsPlugin({ output: './lib/index.d.ts' }),
+    new NpmDtsPlugin({ output: './dist/index.d.ts' }),
     new ProvidePlugin({
       process: 'process/browser',
       Buffer: ['buffer', 'Buffer'],
     }),
+    new CompressionPlugin(),
   ],
   watch: true,
 }

@@ -1,1 +1,5 @@
+export * from './component'
+export * from './diff'
 export * from './reactive'
+export * from './render-dom'
+export * from './vnode'

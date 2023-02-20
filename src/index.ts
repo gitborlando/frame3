@@ -1,27 +1,22 @@
-import { additionalJsTexts, parseCss, parseJs } from './parse'
-import { runningEnv } from './utils'
+import { processAndBufferPolyfill } from './shared/process-buffer-polyfill'
+import { parseSFC } from './parse'
+import { isBrowser } from './shared/utils'
 
-export const NAME = 'frame'
+export { mount, h, reactive, computed, effect } from './core'
+export { parseSFC }
 
-export * from './core'
-export * from './parse'
+processAndBufferPolyfill()
 
-runningEnv === 'browser' &&
+isBrowser() &&
   (window.onload = () => {
-    const script = document.querySelector('[type="text/babel"]')
-    if (!script) return
-
-    const parsedJs = parseJs(script.innerHTML)
-
-    let styles = [...document.querySelectorAll('style[reactive]')]
-    if (!styles.length) styles = [...document.querySelectorAll('style')]
-    styles.forEach((style) => {
-      const newStyle = document.createElement('style')
-      newStyle.innerHTML = parseCss(style.innerHTML)
-      style.replaceWith(newStyle)
-    })
-
-    const newScript = document.createElement('script')
-    newScript.innerHTML = parsedJs + additionalJsTexts.join(';')
-    script.replaceWith(newScript)
+    const scripts = [...document.querySelectorAll('[type="text/babel"]')]
+    const styles = [...document.querySelectorAll('style')]
+    const jsSource = `<script>${scripts.map((script) => script.innerHTML).join(';')}</script>`
+    const cssSource = `<style>${styles.map((style) => style.innerHTML).join(';')}</style>`
+    scripts.forEach((script) => script.remove())
+    styles.forEach((style) => style.remove())
+    const js = parseSFC(jsSource + cssSource)
+    const script = document.createElement('script')
+    script.innerHTML = js
+    document.body.insertAdjacentElement('beforeend', script)
   })

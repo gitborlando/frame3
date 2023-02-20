@@ -7,6 +7,8 @@
   </button>
 </script>
 
+<button v-if="cac"></button>
+
 <style>
   .btn {
     background-color: blueviolet;
@@ -18,14 +20,28 @@
     ref: a = 0
     effect: document.title = a
 
-    const button_1 = fromTemplate('<button></button>')
+    const button_1 = document.createElement('button')
 
     return [
-      effect(() => {
-        button_1.onclick = () => a++
-        button_1.innerHTML = a
-      }),
+      (() => {
+        effect: button_1.onclick = () => a++
+        effect: button_1.innerHTML = a
+        return button_1
+      })(),
     ]
   }
   Component.style = styleString
+</script>
+<script>
+  jsx: <button v-if={abc} className="btn" onClick={() => a++}>
+    {a}
+  </button>
+  jsx('button', {}, ['123', a])
+  const jsx = [
+    (() => {
+      effect: button_1.onclick = () => a++
+      effect: button_1.innerHTML = a
+      return button_1
+    })(),
+  ]
 </script>

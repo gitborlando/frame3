@@ -1,0 +1,33 @@
+<html>
+  <body>
+    <button id="btn">btn</button>
+  </body>
+  <script src="../lib/index.js"></script>
+  <script type="text/babel">
+    ref: a = 100
+    ref: b = 0
+    ref: color = 'red'
+    computed: arr = [a, 2]
+
+    effect: {
+      console.log(a)
+    }
+
+    jsx: <div>
+      <button className="a" onClick={() => (a += 1)}>
+        {a}
+      </button>
+      <button onClick={() => (color = color === 'red' ? 'green' : 'red')}>red to bule</button>
+    </div>
+  </script>
+  <!-- <style>
+    button {
+      background-color: (color);
+    }
+    .a {
+      width: (a * 10) px;
+      height: (a) px;
+      background-color: (color);
+    }
+  </style> -->
+</html>
