@@ -1,6 +1,5 @@
 const NpmDtsPlugin = require('npm-dts-webpack-plugin')
 const { ProvidePlugin } = require('webpack')
-const CompressionPlugin = require('compression-webpack-plugin')
 
 module.exports = {
   mode: 'production',
@@ -30,7 +29,6 @@ module.exports = {
       process: 'process/browser',
       Buffer: ['buffer', 'Buffer'],
     }),
-    new CompressionPlugin(),
   ],
   watch: true,
 }
