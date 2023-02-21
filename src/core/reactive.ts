@@ -41,12 +41,8 @@ function track(targetObj: IObject, key: IKey) {
   if (!keyTocallbacksMap?.get(key)) {
     keyTocallbacksMap.set(key, new Set<ICallback>())
   }
-
-  const prevCallback = callbackStack[callbackStack.length - 2]
-  if (!prevCallback || prevCallback.isFirstRun) {
-    keyTocallbacksMap.get(key)!.add(currentCallback)
-  }
   if (currentCallback.shouldTrack) {
+    keyTocallbacksMap.get(key)!.add(currentCallback)
   }
 }
 
@@ -65,26 +61,27 @@ export function effect<R, P extends IObject = IObject>(effectFunction: (props?: 
       currentCallback = callback
       callbackStack.push(currentCallback)
       const prevCallback = callbackStack[callbackStack.length - 2]
-      if (!prevCallback || prevCallback.isFirstRun) {
+      if (currentCallback.isFirstRun && prevCallback && !prevCallback.isFirstRun) {
+        currentCallback.shouldTrack = false
+        return
       }
       effectFunction(props)
-      //else currentCallback.shouldTrack = false
       currentCallback.isFirstRun = false
     } finally {
       callbackStack.pop()
       currentCallback = callbackStack[callbackStack.length - 1]
     }
   }
+
   callback.isFirstRun = true
   callback.shouldTrack = true
   callback.scheduler = props?.scheduler
-  callback.n = props?.n
   callback()
   return callback
 }
 
 export function computed<T>(cb: ICallback<T>) {
   const result = reactive(undefined as T)
-  effect(() => (result.value = cb()), { n: 'computedCb' })
+  effect(() => (result.value = cb()))
   return result
 }
