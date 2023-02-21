@@ -2,7 +2,8 @@
   <body>
     <div id="div1"></div>
     <div id="div2"></div>
-    <button id="btn">+1</button>
+    <button id="btn">btn</button>
+    <button id="btn2">btn2</button>
   </body>
   <script src="../lib/index.js"></script>
   <!-- <script type="module">
@@ -22,7 +23,7 @@
     }
   </script> -->
 
-  <script type="module">
+  <!-- <script type="module">
     const { computed, effect, reactive } = frame3
 
     const count = reactive(0)
@@ -41,7 +42,7 @@
     btn.onclick = () => {
       count.value++
     }
-  </script>
+  </script> -->
 
   <!-- <script type="text/babel">
     console.log('-----------------------------------------------------------------------')
@@ -59,3 +60,22 @@
     btn.onclick = () => a++
   </script> -->
 </html>
+
+<script type="module">
+  const a = frame3.reactive({ num1: 10, num2: 20 })
+
+  frame3.effect(
+    function f1() {
+      const b = frame3.computed(() => {
+        console.log(`a.num2: ${a.value.num2}`)
+      })
+      console.log(`b: ${b.value}`)
+      console.log(`a.num1: ${a.value.num1}`)
+      return 2
+    },
+    { n: 'f1' }
+  )
+
+  btn.onclick = () => a.value.num1++
+  btn2.onclick = () => a.value.num2++
+</script>

@@ -1,15 +1,19 @@
-type IKey = string | symbol
-type ICallback<T = any> = (prevState?: any) => T
-type IObject = Record<IKey, any>
+import { is } from '../shared/utils'
 
-const targetObjMap = new WeakMap<object, Set<ICallback> | Map<IKey, Set<ICallback>>>()
-let currentCallback: ICallback | null
+type IKey = string | symbol
+type IObject = Record<IKey, any>
+interface ICallback<T = any> {
+  (): T
+  isFirstRun: boolean
+  shouldTrack: boolean
+  scheduler?: Function
+}
 
 export function reactive<Val>(value: Val): { value: Val } {
   return (function makeReactive<Obj extends IObject>(obj: Obj): Obj {
     return new Proxy<Obj>(obj, {
       get(target, key) {
-        record(target, key)
+        track(target, key)
         const gotValue = Reflect.get(target, key)
         return typeof gotValue === 'object' ? makeReactive(gotValue as object) : gotValue
       },
@@ -22,50 +26,65 @@ export function reactive<Val>(value: Val): { value: Val } {
   })({ value })
 }
 
-export function effect<T>(cb: ICallback<T>, lastState?: Record<string, any>) {
-  currentCallback = () => cb(lastState)
-  const res = currentCallback(lastState)
-  currentCallback = null
-  return res
-}
+let currentCallback: ICallback | undefined = undefined
+const callbackStack: ICallback[] = []
+const targetObjMap = new WeakMap<object, Map<IKey, Set<ICallback>>>()
 
-export function computed<T>(cb: ICallback<T>) {
-  const result = reactive(undefined as T)
-  effect(() => (result.value = cb()))
-  return result
-}
-
-function record(targetObj: IObject, key: IKey) {
+function track(targetObj: IObject, key: IKey) {
   if (!currentCallback) return
-
-  const orArray = Array.isArray(targetObj) ? targetObj : Array.isArray(targetObj[key]) ? targetObj[key] : null
-  if (orArray) {
-    if (!targetObjMap.get(orArray)) {
-      targetObjMap.set(orArray, new Set<ICallback>())
-    }
-    const callbacks = targetObjMap.get(orArray) as Set<ICallback>
-    return callbacks.add(currentCallback)
-  }
+  if (is.array(targetObj)) key = 'length'
 
   if (!targetObjMap.get(targetObj)) {
     targetObjMap.set(targetObj, new Map<IKey, Set<ICallback>>())
   }
-  const keyTocallbacksMap = targetObjMap.get(targetObj) as Map<IKey, Set<ICallback>>
-  if (!keyTocallbacksMap.get(key)) {
+  const keyTocallbacksMap = targetObjMap.get(targetObj)!
+  if (!keyTocallbacksMap?.get(key)) {
     keyTocallbacksMap.set(key, new Set<ICallback>())
   }
-  keyTocallbacksMap.get(key)!.add(currentCallback)
+
+  const prevCallback = callbackStack[callbackStack.length - 2]
+  if (!prevCallback || prevCallback.isFirstRun) {
+    keyTocallbacksMap.get(key)!.add(currentCallback)
+  }
+  if (currentCallback.shouldTrack) {
+  }
 }
 
 function trigger(targetObj: IObject, key: IKey) {
-  if (key === 'length' || !targetObj.hasOwnProperty(key)) return
+  if (!targetObj.hasOwnProperty(key)) return
+  if (is.array(targetObj)) key = 'length'
 
-  if (Array.isArray(targetObj)) {
-    const array = targetObj
-    const callbacks = targetObjMap.get(array) as Set<ICallback> | undefined
-    callbacks?.forEach((callback) => callback !== currentCallback && callback())
-  } else {
-    const keyTocallbacksMap = targetObjMap.get(targetObj) as Map<IKey, Set<ICallback>> | undefined
-    keyTocallbacksMap?.get(key)?.forEach((callback) => callback !== currentCallback && callback())
+  const keyTocallbacksMap = targetObjMap.get(targetObj)
+  const callbacks = keyTocallbacksMap?.get(key)
+  callbacks?.forEach((callback) => callback())
+}
+
+export function effect<R, P extends IObject = IObject>(effectFunction: (props?: P) => R, props?: P) {
+  const callback = () => {
+    try {
+      currentCallback = callback
+      callbackStack.push(currentCallback)
+      const prevCallback = callbackStack[callbackStack.length - 2]
+      if (!prevCallback || prevCallback.isFirstRun) {
+      }
+      effectFunction(props)
+      //else currentCallback.shouldTrack = false
+      currentCallback.isFirstRun = false
+    } finally {
+      callbackStack.pop()
+      currentCallback = callbackStack[callbackStack.length - 1]
+    }
   }
+  callback.isFirstRun = true
+  callback.shouldTrack = true
+  callback.scheduler = props?.scheduler
+  callback.n = props?.n
+  callback()
+  return callback
+}
+
+export function computed<T>(cb: ICallback<T>) {
+  const result = reactive(undefined as T)
+  effect(() => (result.value = cb()), { n: 'computedCb' })
+  return result
 }
