@@ -7,11 +7,11 @@ export function babelTraverseLabelOption(): TraverseOptions<t.Node> {
   return {
     LabeledStatement(path) {
       const { name } = path.node.label
-      if (name === 'props') return parsePropsLabel(path)
-      if (name === 'ref') return parseRefLabel(path)
-      if (name === 'computed') return parseComputedLabel(path)
-      if (name === 'effect') return parseEffectLabel(path)
-      if (name === 'jsx') return parseJsxLabel(path)
+      if (name.match(/props|\$p/)) return parsePropsLabel(path)
+      if (name.match(/rective|\$r/)) return parseRefLabel(path)
+      if (name.match(/computed|\$c/)) return parseComputedLabel(path)
+      if (name.match(/effect|\$e/)) return parseEffectLabel(path)
+      if (name.match(/jsx|\$jsx/)) return parseJsxLabel(path)
     },
   }
 }
