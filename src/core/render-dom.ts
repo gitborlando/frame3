@@ -1,4 +1,4 @@
-import { IElementVnode, ITextNodeVnode, IVnode } from '../types'
+import { IElementVnode, ITextNodeVnode, IVnode } from './types'
 import { diffElementVnodeChildren } from './diff'
 import { mountVnode } from './vnode'
 

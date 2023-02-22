@@ -1,25 +1,29 @@
 import { parse } from '@babel/parser'
 import { NodePath, TraverseOptions } from '@babel/traverse'
 import * as t from '@babel/types'
-import { isBrowser } from '../shared/utils'
 import { babelTraverseJSXOption } from './parse-jsx'
 import { babelTraverseLabelOption } from './parse-label'
-import { babelGenerate, babelTraverse, FrameApi, parseState, propIdentifiers, reatciveIdentifers } from './shared'
+import {
+  babelGenerate,
+  babelTraverse,
+  commonImports,
+  createFrameCall,
+  FrameApi,
+  frameApiImports,
+  parseState,
+  reatciveIdentifers,
+} from './shared'
 
-export const cssParsers: (() => string)[] = []
+export const parseJsHooks: (() => string)[] = []
 
 export function parseJs(js: string) {
-  const ast = parse(js, { plugins: ['jsx'] })
+  const ast = parse(js, { plugins: ['jsx'], sourceType: 'module' })
 
   babelTraverse(ast, {
     ...babelTraverseLabelOption(),
     ...babelTraverseDotValueOption(),
     ...babelTraverseJSXOption(),
-    exit(path) {
-      if (t.isProgram(path.node) && parseState.hasJsx) {
-        wrapProgram(path)
-      }
-    },
+    ...babelTraverseOthersOption(),
   })
 
   return babelGenerate(ast).code
@@ -31,6 +35,7 @@ export function babelTraverseDotValueOption(): TraverseOptions<t.Node> {
       if (
         (path.node as any).noNeedDotValue ||
         !reatciveIdentifers.has(path.node.name) ||
+        t.isVariableDeclarator(path.parent) ||
         (t.isMemberExpression(path.parent) && path.node.start !== path.parent.start)
       )
         return
@@ -40,24 +45,50 @@ export function babelTraverseDotValueOption(): TraverseOptions<t.Node> {
   }
 }
 
-let done = false
 function wrapProgram(path: NodePath<t.Node>) {
-  if (done) return
-  done = true
+  if (parseState.wrapped) return
+  parseState.wrapped = true
 
-  const props = t.objectPattern(
-    [...propIdentifiers].map((propName) => t.objectProperty(t.identifier(propName), t.identifier(propName)))
+  const componentFunction = t.arrowFunctionExpression(
+    [t.identifier(`({${parseState.propsGeneratedCode}})`)],
+    t.blockStatement((path.node as any).body)
   )
-  const componentFunction = t.arrowFunctionExpression([props], t.blockStatement((path.node as any).body))
 
-  if (isBrowser()) {
-    const mountCall = t.callExpression(t.identifier(FrameApi.mount), [
-      componentFunction,
-      parseState.toMountElementSelector || t.identifier('document.body'),
+  const mountStatement =
+    parseState.toMountElement &&
+    t.expressionStatement(
+      createFrameCall(FrameApi.mount, [t.identifier(parseState.componentName), parseState.toMountElement])
+    )
+
+  const importFrameApiDeclarationString = frameApiImports.length
+    ? `import { ${frameApiImports.reduce((all, { api, as }) => (all += `${api} as ${as},`), '')} } from "${
+        parseState.importApiFrom
+      }"`
+    : ''
+  const commonImportsString = [...commonImports].reduce((p, i) => (p += babelGenerate(i).code + '\n'), '')
+
+  path.replaceWith(
+    t.program([
+      t.expressionStatement(t.identifier(commonImportsString + importFrameApiDeclarationString)),
+      t.variableDeclaration('let', [t.variableDeclarator(t.identifier(parseState.componentName))]),
+      t.exportDefaultDeclaration(
+        t.assignmentExpression('=', t.identifier(parseState.componentName), componentFunction)
+      ),
+      ...(mountStatement ? [mountStatement] : []),
     ])
-    path.replaceWith(t.program([t.expressionStatement(mountCall)]))
-    return
-  }
+  )
+}
 
-  path.replaceWith(t.program([t.exportDefaultDeclaration(componentFunction)]))
+function babelTraverseOthersOption(): TraverseOptions<t.Node> {
+  return {
+    ImportDeclaration(path) {
+      commonImports.add(path.node)
+      path.remove()
+    },
+    exit(path) {
+      if (t.isProgram(path.node)) {
+        wrapProgram(path)
+      }
+    },
+  }
 }

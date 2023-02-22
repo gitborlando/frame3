@@ -1,6 +1,7 @@
-npx esbuild src/index.ts \
+npx esbuild src/core/index.ts \
   --bundle \
   --outfile=lib/index.js \
-  --global-name=frame3 \
+  --sourcemap \
+  --format=esm \
   --watch \
-  --sourcemap
+  --minify

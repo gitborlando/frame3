@@ -1,13 +1,14 @@
-import { IComponentInstance, IComponentVnode } from '../types'
+import { IComponentInstance, IComponentVnode } from './types'
 import { effect } from './reactive'
 import { updateVnode, mountVnode, specialDealVnodeChildren } from './vnode'
 
 export function mountComponentVnode(componentVnode: IComponentVnode, parentDom: Element) {
   const { jsxTag: componentFunction, props } = componentVnode
+  const renderFunction = componentFunction(props)
   const componentInstance = {
     isMounted: false,
   } as IComponentInstance
-  const renderFunction = componentFunction(props)
+  componentVnode.componentInstance = componentInstance
 
   componentInstance.update = () => {
     if (!componentInstance.isMounted) {

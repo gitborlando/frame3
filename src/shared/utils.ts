@@ -1,4 +1,4 @@
-import { IComponentVnode, IElementVnode, ITextNodeVnode, IVnode, VnodeType } from '../types'
+import { IComponentVnode, IElementVnode, ITextNodeVnode, IVnode, VnodeType } from '../core/types'
 
 export const isBrowser = () => !!globalThis.window
 

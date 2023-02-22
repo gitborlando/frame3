@@ -5,8 +5,8 @@ import { FrameApi } from './shared'
 const additionalJsForAddCss: string[] = []
 
 export const parseCss = (css: string) => {
+  additionalJsForAddCss.length = 0
   const ast = cssParse(css)
-
   walk(ast, {
     visit: 'Rule',
     enter(rule) {

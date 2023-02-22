@@ -1,17 +1,26 @@
 import { format } from 'prettier'
-import parserBabel from 'prettier/parser-babel'
 import { parseCss } from './parse-css'
-import { cssParsers, parseJs } from './parse-js'
-import { uuid } from './shared'
+import { parseJsHooks, parseJs } from './parse-js'
+import { init, parseState, uuid } from './shared'
+import parserBabel from 'prettier/parser-babel'
 
 export let scopeId = uuid()
 
-export function parseSFC(sfcSource: string) {
-  const [jsSource, cssCource] = getJsAndCssFromSFC(sfcSource)
-  cssParsers.push(() => parseCss(cssCource))
-  const js = parseJs(jsSource)
-  return format(js, { parser: 'babel', plugins: [parserBabel] })
+export function parseSFC(sfcSource: string): string
+export function parseSFC(sfcSource: { js: string; css: string }): string
+export function parseSFC(sfcSource: string | { js: string; css: string }) {
+  init()
+  scopeId = uuid()
+  parseJsHooks.length = 0
+
+  const [jsSource, cssCource] =
+    typeof sfcSource === 'object' ? [sfcSource.js, sfcSource.css] : getJsAndCssFromSFC(sfcSource)
+
+  parseJsHooks.push(() => parseCss(cssCource))
+  return format(parseJs(jsSource), { parser: 'babel', plugins: [parserBabel] })
 }
+
+parseSFC.setImportApiFrom = (importApiFrom: string) => (parseState.importApiFrom = importApiFrom)
 
 function getJsAndCssFromSFC(sfcSource: string) {
   let [js, css, char, inScript, inStyle] = ['', '', '', false, false]

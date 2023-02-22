@@ -1,3 +1,5 @@
 {
-  "exportall.config.folderListener": ["/src/core", "/src/parse"]
+  "editor.codeActionsOnSave": {
+    "source.organizeImports": false
+  }
 }

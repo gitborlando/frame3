@@ -1,4 +1,4 @@
-import { IElementVnode, ITextNodeVnode, IVnode, VnodeType } from '../types'
+import { IElementVnode, ITextNodeVnode, IVnode, VnodeType } from './types'
 import { mountVnode, unmountVnode, updateVnode } from './vnode'
 
 export function diffElementVnodeChildren(prevVnode: IElementVnode, currentVnode: IElementVnode, parentDom: Element) {

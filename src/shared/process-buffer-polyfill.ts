@@ -7,4 +7,4 @@ if (isBrowser()) {
   ;(window as any).process = process
 }
 
-export const processAndBufferPolyfill = () => {}
+export const polyfillProcessAndBuffer = () => {}

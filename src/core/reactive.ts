@@ -9,7 +9,7 @@ interface ICallback<T = any> {
   scheduler?: Function
 }
 
-export function reactive<Val>(value: Val): { value: Val } {
+export function reactive<T>(value?: T): { value: T | undefined } {
   return (function makeReactive<Obj extends IObject>(obj: Obj): Obj {
     return new Proxy<Obj>(obj, {
       get(target, key) {
@@ -81,7 +81,7 @@ export function effect<R, P extends IObject = IObject>(effectFunction: (props?: 
 }
 
 export function computed<T>(cb: ICallback<T>) {
-  const result = reactive(undefined as T)
+  const result = reactive()
   effect(() => (result.value = cb()))
   return result
 }

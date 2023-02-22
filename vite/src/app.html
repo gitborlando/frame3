@@ -1,0 +1,16 @@
+<script>
+  import Counter from './counter.html'
+  import { reactive, computed } from '../../lib'
+  import { useCounter } from './counter.hook.js'
+
+  const { counter, setCounter } = useCounter()
+  $: counter
+
+  effect: console.log(counter.value)
+
+  jsx: <div>
+    count is: {counter.value}
+    {console.log('parent render')}
+    <Counter count={counter} setCount={setCounter} sizeRate={computed(() => counter.value * 0.5)}></Counter>
+  </div>
+</script>

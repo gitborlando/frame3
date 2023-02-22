@@ -1,5 +1,2 @@
-export * from './component'
-export * from './diff'
-export * from './reactive'
-export * from './render-dom'
-export * from './vnode'
+export { computed, effect, reactive } from './reactive'
+export { h, mount } from './vnode'

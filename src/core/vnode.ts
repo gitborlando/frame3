@@ -7,7 +7,7 @@ import {
   IVnodeJsxTag,
   IVnodeProps,
   VnodeType,
-} from '../types'
+} from './types'
 import { is, vnodeIs } from '../shared/utils'
 import { mountComponentVnode as mountComponentVnode, passiveUpdateComponent } from './component'
 import {
