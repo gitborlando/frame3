@@ -31,7 +31,7 @@
   },
   "scripts": {
     "dev": "node esbuild.js",
-    "publish": "npx cimi patch main"
+    "publish": "npm version patch && npm publish"
   },
   "dependencies": {
     "@babel/generator": "^7.20.14",

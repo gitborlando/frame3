@@ -1,5 +1,5 @@
 .vscode
-docs
+example
 node_modules
 .gitignore
 esbuild.js
