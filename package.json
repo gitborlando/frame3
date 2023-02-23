@@ -12,7 +12,6 @@
     "@babel/traverse": "^7.21.0",
     "async": "^3.2.4",
     "css-tree": "2.0.1",
-    "prettier": "^2.8.4",
     "string-iterator": "^0.0.1"
   },
   "devDependencies": {
