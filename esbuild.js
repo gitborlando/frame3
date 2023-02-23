@@ -15,7 +15,6 @@ esbuild
         out: `${file.replace(/.ts$/, '')}`,
       })),
     outdir: 'lib',
-    sourcemap: true,
     minify: true,
     platform: 'node',
   })
