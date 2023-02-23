@@ -1,8 +1,7 @@
-import { polyfillProcessAndBuffer } from './shared/process-buffer-polyfill'
-import { parseSFC } from './parse'
+import { polyfillProcessAndBuffer } from '../shared/process-buffer-polyfill'
+import { parseSFC } from '../parse-sfc'
 
-export * from './core'
-export * from './parse'
+export * from '../runtime'
 
 polyfillProcessAndBuffer()
 
@@ -12,8 +11,10 @@ const styles = [...document.querySelectorAll('style')]
 const jsSource = `<script>${script.innerHTML}</script>`
 const cssSource = `<style>${styles.map((style) => style.innerHTML).join(';')}</style>`
 
-parseSFC.setImportApiFrom(script.src.replace('browser.js', 'module.js'))
-const js = parseSFC(jsSource + cssSource)
+parseSFC.config({
+  importApiFrom: script.src.replace('browser.js', 'module.js'),
+})
+const js = parseSFC([jsSource, cssSource])
 const newScript = document.createElement('script')
 
 newScript.innerHTML = js

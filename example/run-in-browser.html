@@ -1,9 +1,8 @@
 <html>
   <body></body>
-  <script type="module" src="../lib/cdn.js">
-    import {h } from '../lib/cdn.js'
+  <script type="module" src="../lib/browser.js">
     props: size
-    let counter, sizeRate, App = () => () => h(0, {}, [])
+    let counter, sizeRate
 
     r: counter = 0
     computed: sizeRate = { large: 2, middle: 1.5, small: 1 }[size || 'middle']
@@ -13,7 +12,6 @@
     }
 
     jsx: <div className="center container">
-      <App />
       <div className="center operator" onClick={() => counter--}>
         -
       </div>

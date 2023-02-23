@@ -1,0 +1,7 @@
+.vscode
+docs
+node_modules
+.gitignore
+esbuild.js
+tsconfig.json
+yarn.lock

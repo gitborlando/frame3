@@ -24,10 +24,10 @@ import {
  * @param children jsx的子节点
  * @returns 返回vnode
  */
-export function h(jsxTag: 0, props: IVnodeProps, children: any[]): ITextNodeVnode
-export function h(jsxTag: string, props: IVnodeProps, children: any[]): IElementVnode
-export function h(jsxTag: IComponentFunction, props: IVnodeProps, children: never[]): IComponentVnode
-export function h(jsxTag: IVnodeJsxTag, props: IVnodeProps, children: any[]): IVnode {
+export function h(jsxTag: 0, props?: IVnodeProps, children?: any[]): ITextNodeVnode
+export function h(jsxTag: string, props?: IVnodeProps, children?: any[]): IElementVnode
+export function h<P extends IVnodeProps>(jsxTag: IComponentFunction<P>, props?: P, children?: any[]): IComponentVnode
+export function h(jsxTag: IVnodeJsxTag, props: IVnodeProps = {}, children: any[] = []): IVnode {
   const vnodeBase = {
     props,
     children,

@@ -1,0 +1,61 @@
+type VnodeType = {
+  element: 'element'
+  textNode: 'textNode'
+  component: 'component'
+}
+
+type IVnodeJsxTag = IComponentFunction | string | 0
+type IVnodeType = VnodeType[keyof VnodeType]
+type IVnodeProps = Record<string, any>
+type IComponentFunction<P extends IVnodeProps = {}> = (props: P) => () => IVnode
+
+interface IVnodeBase {
+  jsxTag: IVnodeJsxTag
+  type: IVnodeType
+  props: IVnodeProps
+  componentInstance: IComponentInstance | null
+  key: any
+}
+
+type IVnode = IComponentVnode | IElementVnode | ITextNodeVnode
+type IComponentVnode = Omit<IVnodeBase, 'jsxTag'> & {
+  jsxTag: IComponentFunction
+  el: Element | Text | null
+  children: any[]
+}
+type IElementVnode = Omit<IVnodeBase, 'jsxTag' | 'el' | 'componentInstance'> & {
+  jsxTag: string
+  el: Element | null
+  children: IVnode[]
+}
+type ITextNodeVnode = Omit<IVnodeBase, 'jsxTag' | 'el' | 'componentInstance' | 'children'> & {
+  jsxTag: 0
+  el: Text | null
+  children: string[]
+}
+
+interface IComponentInstance {
+  update(): void
+  isMounted: boolean
+  subVnode: IVnode
+}
+
+export declare function reactive<T>(value: T): T
+export declare function computed<T>(callback: () => T): T
+export declare function effect<T, P>(callback: (props?: P) => T, props?: P): T
+
+export declare function h(jsxTag: 0, props?: IVnodeProps, children?: any[]): IVnode
+export declare function h(jsxTag: string, props?: IVnodeProps, children?: any[]): IVnode
+export function h<P extends IVnodeProps>(jsxTag: IComponentFunction<P>, props?: P, children?: any[]): IComponentVnode
+
+export declare function mount(vnode: IVnode, parentDom: Element): void
+export declare function mount(componentFunction: IComponentFunction, parentDom: Element): void
+export declare function mount(toMount: IVnode | IComponentFunction, parentDom: Element): void
+
+declare module 'frame3/vite-plugin' {
+  export function frame3(): any
+}
+
+declare module 'frame3/parse-sfc' {
+  export function parseSFC([jsSource, cssCource]: [string, string]): string
+}

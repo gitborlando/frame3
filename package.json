@@ -1,10 +1,38 @@
 {
-  "name": "frame",
-  "version": "1.0.0",
-  "description": "",
+  "name": "frame3",
+  "version": "1.0.1",
+  "description": "A mini front-end framework",
   "main": "./lib/index.js",
+  "module": "./lib/index.js",
   "types": "./lib/index.d.ts",
+  "unpkg": "./lib/browser.js",
+  "jsdelivr": "./lib/browser.js",
   "type": "module",
+  "exports": {
+    ".": {
+      "import": "./lib/index.js"
+    },
+    "./parse-sfc": {
+      "import": "./lib/parse-sfc.js"
+    },
+    "./vite-plugin": {
+      "import": "./src/export/vite-plugin.ts"
+    }
+  },
+  "typesVersions": {
+    "*": {
+      "parse-sfc": [
+        "./lib/index.d.ts"
+      ],
+      "vite-plugin": [
+        "./lib/index.d.ts"
+      ]
+    }
+  },
+  "scripts": {
+    "dev": "node esbuild.js",
+    "publish": "npx cimi patch main"
+  },
   "dependencies": {
     "@babel/generator": "^7.20.14",
     "@babel/parser": "^7.20.15",
@@ -19,17 +47,18 @@
     "@types/babel__template": "^7.4.1",
     "@types/babel__traverse": "^7.18.3",
     "@types/css-tree": "^2.3.0",
+    "@types/node": "^18.14.0",
     "@types/prettier": "^2.7.2",
     "buffer": "^6.0.3",
+    "cimi": "^1.2.1",
     "esbuild": "^0.17.8",
-    "esbuild-plugin-d.ts": "^1.1.0",
     "process": "^0.11.10",
     "ts-loader": "^9.4.2",
     "tslib": "^2.5.0",
     "typescript": "^4.9.5",
     "vite": "^4.1.4"
   },
-  "author": "",
+  "author": "Gitborlando",
   "license": "ISC",
   "prettier": {
     "useTabs": false,

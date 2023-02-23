@@ -1,5 +1,6 @@
 {
   "editor.codeActionsOnSave": {
     "source.organizeImports": false
-  }
+  },
+  "exportall.config.folderListener": ["/src/parse-sfc", "/src/runtime"]
 }

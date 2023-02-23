@@ -11,10 +11,11 @@ interface IJsx {
   jsxElementPath: NodePath<any>
 }
 
-const jsxStack: IJsx[] = []
+export const jsxStack: IJsx[] = []
 const getJsxStackLastOne = () => jsxStack[jsxStack.length - 1]
 
 export function babelTraverseJSXOption(): TraverseOptions<any> {
+  jsxStack.length = 0
   return {
     JSXOpeningElement(path) {
       const { node, parentPath } = path
@@ -25,17 +26,19 @@ export function babelTraverseJSXOption(): TraverseOptions<any> {
         isSelfClose: node.selfClosing,
         jsxElementPath: parentPath,
       }
+
       const prevJsx = getJsxStackLastOne()
       if (!prevJsx) return void jsxStack.push(currentJsx)
+      jsxStack.push(currentJsx)
 
-      if (prevJsx.isSelfClose) {
-        prevJsx.jsxElementPath.replaceWith(createHydrateCall(prevJsx))
-        jsxStack.pop()
-      } else if (t.isJSXElement(currentJsx.jsxElementPath.parentPath?.node)) {
+      if (!prevJsx.isSelfClose && t.isJSXElement(currentJsx.jsxElementPath.parentPath?.node)) {
         prevJsx.children.push(currentJsx.jsxElementPath.node)
       }
+      if (currentJsx.isSelfClose) {
+        currentJsx.jsxElementPath.replaceWith(createHydrateCall(prevJsx))
+        jsxStack.pop()
+      }
 
-      jsxStack.push(currentJsx)
       parseState.hasJsx = true
       parseState.isInJsx = true
     },
@@ -43,7 +46,7 @@ export function babelTraverseJSXOption(): TraverseOptions<any> {
       const { name, value } = node
       const currentJsx = getJsxStackLastOne()
       const propKey = (name as unknown as t.Identifier).name
-      const propValue = t.isJSXExpressionContainer(value) ? value.expression : value
+      const propValue = t.isJSXExpressionContainer(value) ? value.expression : value ? value : t.identifier(propKey)
       currentJsx.props[propKey] = propValue
     },
     JSXText({ node }) {

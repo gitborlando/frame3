@@ -55,6 +55,12 @@ function trigger(targetObj: IObject, key: IKey) {
   callbacks?.forEach((callback) => callback())
 }
 
+export function computed<T>(cb: ICallback<T>) {
+  const result = reactive()
+  effect(() => (result.value = cb()))
+  return result
+}
+
 export function effect<R, P extends IObject = IObject>(effectFunction: (props?: P) => R, props?: P) {
   const callback = () => {
     try {
@@ -78,10 +84,4 @@ export function effect<R, P extends IObject = IObject>(effectFunction: (props?: 
   callback.scheduler = props?.scheduler
   callback()
   return callback
-}
-
-export function computed<T>(cb: ICallback<T>) {
-  const result = reactive()
-  effect(() => (result.value = cb()))
-  return result
 }

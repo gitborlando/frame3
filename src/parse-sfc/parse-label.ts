@@ -1,7 +1,6 @@
 import { NodePath, TraverseOptions } from '@babel/traverse'
 import * as t from '@babel/types'
-import { parseJsHooks } from './parse-js'
-import { babelGenerate, babelTemplate, createFrameCall, FrameApi, parseState, reatciveIdentifers } from './shared'
+import { babelGenerate, babelTemplate, createFrameCall, FrameApi, parseJsHooks, parseState } from './shared'
 
 export function babelTraverseLabelOption(): TraverseOptions<t.Node> {
   return {
@@ -41,7 +40,7 @@ function parseReactiveLabel(path: NodePath<t.LabeledStatement>) {
     return path.remove()
   }
   ;(identifier as any).noNeedDotValue = true
-  reatciveIdentifers.add(identifier.name)
+  // reatciveIdentifers.add(identifier.name)
 
   const reactiveCall = createFrameCall(FrameApi.reactive, [value])
   const reactiveAssignment = t.assignmentExpression('=', identifier, reactiveCall)
@@ -55,7 +54,7 @@ function parseComputedLabel(path: NodePath<t.LabeledStatement>) {
 
   const { left: identifier, right: computedExpression } = node.body.expression
   ;(identifier as any).noNeedDotValue = true
-  reatciveIdentifers.add(babelGenerate(identifier).code)
+  // reatciveIdentifers.add(babelGenerate(identifier).code)
 
   const computedCaller = t.identifier(FrameApi.computed)
   const computedCallback = t.isArrowFunctionExpression(computedExpression)
@@ -89,21 +88,6 @@ function parsePropsLabel(path: NodePath<t.LabeledStatement>) {
   if (!t.isExpressionStatement(body)) return path.remove()
 
   parseState.propsGeneratedCode = babelGenerate(body.expression).code
-  // if (t.isIdentifier(body.expression)) {
-  //   propIdentifiers.add(body.expression.name)
-  // }
-  // let multiIdentifiers: t.Expression[] = []
-  // if (t.isSequenceExpression(body.expression)) {
-  //   multiIdentifiers = body.expression.expressions
-  // }
-  // if (t.isArrayExpression(body.expression)) {
-  //   multiIdentifiers = body.expression.elements as t.Expression[]
-  // }
-  // multiIdentifiers
-  //   .filter((i) => t.isIdentifier(i))
-  //   .map((i) => (i as t.Identifier).name)
-  //   .forEach((prop) => propIdentifiers.add(prop))
-
   path.remove()
 }
 
