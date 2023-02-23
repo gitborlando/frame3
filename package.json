@@ -1,6 +1,6 @@
 {
   "name": "frame3",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "A mini front-end framework",
   "main": "./lib/index.js",
   "module": "./lib/index.js",
