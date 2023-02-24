@@ -45,7 +45,6 @@ function setDomAttributeFromVnodeProps(preVnode: IElementVnode | null, currentVn
 
   for (const [propkey, propValue] of diffedProps) {
     if (propkey.startsWith('on')) {
-      console.log(propValue)
       el.addEventListener(propkey.slice(2).toLocaleLowerCase(), propValue)
     } else if (propkey === 'style') {
       const styleString = Object.entries(propValue)

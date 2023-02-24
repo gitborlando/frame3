@@ -40,7 +40,10 @@ const targetObjMap = new WeakMap<object, Map<IKey, Set<ICallback>>>()
 
 function track(targetObj: object, key: IKey) {
   if (!currentCallback) return
-  if (is.array(targetObj)) key = 'length'
+  if (is.array(targetObj)) {
+    if (key === 'length') return
+    key = key === ManualTrackObjectKey ? key : 'length'
+  }
 
   if (!targetObjMap.get(targetObj)) {
     targetObjMap.set(targetObj, new Map<IKey, Set<ICallback>>())
@@ -62,9 +65,11 @@ export function $track<T extends object>(object: T) {
 }
 
 function trigger(targetObj: object, key: IKey) {
-  if (!targetObj.hasOwnProperty(key)) return
-  if (is.array(targetObj) && key === 'length') return
-  else key = 'length'
+  if (!targetObj.hasOwnProperty(key) || key === 'length') return
+  if (is.array(targetObj)) {
+    if (key === 'length') return
+    key = key === ManualTrackObjectKey ? key : 'length'
+  }
 
   const keyTocallbacksMap = targetObjMap.get(targetObj)
   const callbacks = keyTocallbacksMap?.get(key)

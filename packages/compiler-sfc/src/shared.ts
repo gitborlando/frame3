@@ -1,7 +1,7 @@
 import _generate from '@babel/generator'
 import { parse } from '@babel/parser'
 import _template from '@babel/template'
-import _traverse from '@babel/traverse'
+import _traverse, { NodePath } from '@babel/traverse'
 import * as t from '@babel/types'
 import * as buffer from 'buffer'
 import process from 'process'
@@ -35,6 +35,8 @@ export const parseState = {
   propsGeneratedCode: '',
   componentName: 'Component' + uuid(),
   wrapped: false,
+  returnStatementAnchor: undefined as unknown as NodePath<t.ReturnStatement>,
+  arrowFuncsTokenOutFrameJsx: [] as string[],
 }
 
 const id = '__' + uuid().slice(0, 4)
@@ -70,6 +72,7 @@ export function init() {
   parseState.propsGeneratedCode = ''
   parseState.componentName = 'Component' + uuid()
   parseState.wrapped = false
+  parseState.arrowFuncsTokenOutFrameJsx.length = 0
 
   parseConfig = defaultConfig
 }

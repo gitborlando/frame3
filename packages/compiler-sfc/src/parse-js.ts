@@ -80,6 +80,7 @@ function babelTraverseOthersOption(): TraverseOptions<t.Node> {
       if (!t.isJSXElement(path.node.argument)) return
 
       path.replaceWith(t.returnStatement(t.arrowFunctionExpression([], path.node.argument)))
+      parseState.returnStatementAnchor = path
       const cssInJs = babelTemplate.ast(parseJsHooks.map((parseCss) => parseCss()).join(''))
       path.insertBefore(cssInJs)
     },

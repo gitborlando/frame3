@@ -1,7 +1,7 @@
 import { NodePath, TraverseOptions } from '@babel/traverse'
 import * as t from '@babel/types'
 import { scopeId } from './parse-sfc'
-import { FrameApi, parseState } from './shared'
+import { FrameApi, parseState, uuid } from './shared'
 
 interface IJsx {
   tag: string
@@ -81,8 +81,11 @@ export function babelTraverseJSXOption(): TraverseOptions<any> {
     ArrowFunctionExpression(path) {
       if (!t.isJSXExpressionContainer(path.parent)) return
 
-      const computedCall = t.callExpression(t.identifier(FrameApi.computed), [t.arrowFunctionExpression([], path.node)])
-      path.replaceWith(t.memberExpression(computedCall, t.identifier('value')))
+      const randomId = `arrow_func_${uuid().slice(0, 4)}`
+      parseState.returnStatementAnchor.insertBefore(
+        t.variableDeclaration('const', [t.variableDeclarator(t.identifier(randomId), path.node)])
+      )
+      path.replaceWith(t.identifier(randomId))
     },
   }
 }
