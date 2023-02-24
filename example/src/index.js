@@ -1,8 +1,8 @@
 // import { mount } from 'frame3'
 // import App from './app'
 
-import { reactive, effect, computed, $reactive, $computed } from 'frame3'
-// import { $goods } from './store'
+import { $track, effect } from 'frame3'
+import { $goods } from './store'
 
 // mount(App, document.body)
 // let $a = $reactive(0)
@@ -25,12 +25,3 @@ import { reactive, effect, computed, $reactive, $computed } from 'frame3'
 // // }, 500)
 // $a++
 // $a++
-
-export let $goods = $reactive([])
-
-effect(() => {
-  console.log($goods)
-})
-
-$goods[0] = 1
-$goods.push(2)

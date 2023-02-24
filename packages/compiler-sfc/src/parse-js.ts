@@ -45,7 +45,7 @@ function babelTraverseDotValueOption(): TraverseOptions<t.Node> {
         !path.node.name.startsWith('$') ||
         path.node.name === '$' ||
         path.node.name.match(/.value$/) ||
-        path.node.name.match(/\$(reactive|computed)/) ||
+        path.node.name.match(/\$(reactive|computed|track)/) ||
         t.isObjectProperty(path.parent) ||
         t.isImportSpecifier(path.parent) ||
         t.isVariableDeclarator(path.parent)
