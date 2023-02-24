@@ -1,65 +1,28 @@
 {
-  "name": "frame3",
+  "private": "true",
   "version": "1.0.24",
   "description": "A mini front-end framework",
-  "main": "./lib/index.js",
-  "module": "./lib/index.js",
-  "types": "./lib/index.d.ts",
-  "unpkg": "./lib/browser.js",
-  "jsdelivr": "./lib/browser.js",
-  "type": "module",
-  "exports": {
-    ".": {
-      "import": "./lib/index.js"
-    },
-    "./parse-sfc": {
-      "import": "./lib/parse-sfc.js"
-    },
-    "./vite-plugin": {
-      "import": "./src/export/vite-plugin.ts"
-    }
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gitborlando/frame3.git"
   },
-  "typesVersions": {
-    "*": {
-      "parse-sfc": [
-        "./lib/index.d.ts"
-      ],
-      "vite-plugin": [
-        "./lib/index.d.ts"
-      ]
-    }
-  },
-  "scripts": {
-    "dev": "node esbuild.js",
-    "publish": "npm publish"
-  },
-  "dependencies": {
-    "@babel/generator": "^7.20.14",
-    "@babel/parser": "^7.20.15",
-    "@babel/template": "^7.20.7",
-    "@babel/traverse": "^7.21.0",
-    "async": "^3.2.4",
-    "css-tree": "2.0.1",
-    "string-iterator": "^0.0.1"
-  },
-  "devDependencies": {
-    "@types/babel__generator": "^7.6.4",
-    "@types/babel__template": "^7.4.1",
-    "@types/babel__traverse": "^7.18.3",
-    "@types/css-tree": "^2.3.0",
-    "@types/node": "^18.14.0",
-    "@types/prettier": "^2.7.2",
-    "buffer": "^6.0.3",
-    "cimi": "^1.2.1",
-    "esbuild": "^0.17.8",
-    "process": "^0.11.10",
-    "ts-loader": "^9.4.2",
-    "tslib": "^2.5.0",
-    "typescript": "^4.9.5",
-    "vite": "^4.1.4"
-  },
+  "homepage": "https://github.com/gitborlando/frame3.git",
+  "keywords": [
+    "frame3"
+  ],
   "author": "Gitborlando",
   "license": "ISC",
+  "type": "module",
+  "scripts": {
+    "dev": "node ./esbuild.js",
+    "build-plugin": "node ./packages/vite-plugin/build.js"
+  },
+  "devDependencies": {
+    "@types/node": "^18.14.0",
+    "esbuild": "^0.17.8",
+    "tslib": "^2.5.0",
+    "typescript": "^4.9.5"
+  },
   "prettier": {
     "useTabs": false,
     "tabWidth": 2,

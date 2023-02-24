@@ -1,0 +1,23 @@
+{
+  "name": "vite-plugin-frame3",
+  "version": "1.0.24",
+  "description": "A mini front-end framework's vite plugin",
+  "type": "module",
+  "main": "./index.js",
+  "module": "./index.js",
+  "types": "./index.ts",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gitborlando/frame3.git"
+  },
+  "homepage": "https://github.com/gitborlando/frame3.git",
+  "keywords": [
+    "frame3"
+  ],
+  "author": "Gitborlando",
+  "license": "ISC",
+  "dependencies": {
+    "vite": "^4.1.4",
+    "@frame3/compiler-sfc": "workspace:*"
+  }
+}

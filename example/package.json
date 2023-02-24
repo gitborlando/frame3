@@ -1,14 +1,18 @@
 {
-  "name": "example",
+  "name": "@frame3/example",
   "version": "1.0.0",
-  "description": "",
-  "main": "vite.config.js",
+  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "npx vite"
   },
-  "author": "",
+  "author": "Gitborlando",
   "license": "ISC",
   "dependencies": {
-    "react": "^18.2.0"
+    "@frame3/compiler-sfc": "workspace:*",
+    "frame3": "workspace:*",
+    "vite-plugin-frame3": "workspace:*"
+  },
+  "devDependencies": {
+    "vite": "^4.1.4"
   }
 }

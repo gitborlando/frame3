@@ -1,0 +1,19 @@
+{
+  "name": "@frame3/runtime-core",
+  "version": "1.0.24",
+  "description": "A mini front-end framework's runtime-core",
+  "type": "module",
+  "main": "./index.js",
+  "module": "./index.js",
+  "types": "./src/index.ts",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gitborlando/frame3.git"
+  },
+  "homepage": "https://github.com/gitborlando/frame3.git",
+  "keywords": [
+    "frame3"
+  ],
+  "author": "Gitborlando",
+  "license": "ISC"
+}

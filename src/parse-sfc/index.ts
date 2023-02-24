@@ -1,6 +1,0 @@
-export * from './parse-css'
-export * from './parse-js'
-export * from './parse-jsx'
-export * from './parse-label'
-export * from './parse-sfc'
-export * from './shared'
