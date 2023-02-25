@@ -1,8 +1,8 @@
 import { is } from './shared'
-import { IComponentFunction, IComponentInstance, IVnode, IVnodeProps } from './types'
+import { IComponentFunction, IComponentInstance, IVnodeProps } from './types'
 
 type IKey = string | symbol
-interface ICallback<T = any> {
+interface IEffectCallback<T = any> {
   (): T
   isFirstRun: boolean
   shouldTrack: boolean
@@ -35,9 +35,9 @@ export function $reactive(value?: unknown) {
   return value
 }
 
-let currentCallback: ICallback | undefined = undefined
-const callbackStack: ICallback[] = []
-const targetObjMap = new WeakMap<object, Map<IKey, Set<ICallback>>>()
+let currentCallback: IEffectCallback | undefined = undefined
+const callbackStack: IEffectCallback[] = []
+const targetObjMap = new WeakMap<object, Map<IKey, Set<IEffectCallback>>>()
 
 function track(targetObj: object, key: IKey) {
   if (!currentCallback) return
@@ -47,11 +47,11 @@ function track(targetObj: object, key: IKey) {
   }
 
   if (!targetObjMap.get(targetObj)) {
-    targetObjMap.set(targetObj, new Map<IKey, Set<ICallback>>())
+    targetObjMap.set(targetObj, new Map<IKey, Set<IEffectCallback>>())
   }
   const keyTocallbacksMap = targetObjMap.get(targetObj)!
   if (!keyTocallbacksMap?.get(key)) {
-    keyTocallbacksMap.set(key, new Set<ICallback>())
+    keyTocallbacksMap.set(key, new Set<IEffectCallback>())
   }
   if (currentCallback.shouldTrack) {
     keyTocallbacksMap.get(key)!.add(currentCallback)
@@ -99,13 +99,13 @@ export function effect<R, P extends object & { scheduler: Function }>(effectCall
   callback()
 }
 
-export function computed<T>(cb: ICallback<T>): { value: T } {
+export function computed<T>(cb: IEffectCallback<T>): { value: T } {
   const result = reactive('' as T)
   effect(() => (result.value = cb()))
   return result
 }
 
-export function $computed<T>(cb: ICallback<T>): T {
+export function $computed<T>(cb: IEffectCallback<T>): T {
   return cb()
 }
 
