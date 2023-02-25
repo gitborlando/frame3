@@ -1,8 +1,12 @@
-import { $reactive, effect } from 'frame3'
+import { effect } from 'frame3'
 import './counter.css'
 
-export const Counter = ({ init }) => {
-  let $counter = $reactive(init)
+interface ICounterProps {
+  init: number
+}
+
+export const Counter = ({ init }: ICounterProps) => {
+  let $counter = init
   effect(() => {
     console.log('props', $counter)
   })

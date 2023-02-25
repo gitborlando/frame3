@@ -19,7 +19,7 @@ export const polyfillProcessAndBuffer = () => {
 export const babelTraverse = (_traverse as any).default as typeof _traverse
 export const babelGenerate = (_generate as any).default as typeof _generate
 export const babelTemplate = (_template as any).default as typeof _template
-export const babelParse = (js: string) => parse(js, { plugins: ['jsx'], sourceType: 'module' })
+export const babelParse = (js: string) => parse(js, { plugins: ['jsx', 'typescript'], sourceType: 'module' })
 
 export const frameApiImports: { api: string; as: string }[] = []
 export const commonImports = new Set<t.ImportDeclaration>()

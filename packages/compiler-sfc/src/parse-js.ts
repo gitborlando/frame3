@@ -65,6 +65,18 @@ function babelTraverseDotValueOption(): TraverseOptions<t.Node> {
         path.skip()
       }
     },
+    VariableDeclarator(path) {
+      const { node } = path
+      if (t.isIdentifier(node.id) && node.id.name.match(/^\$/)) {
+        if (
+          t.isCallExpression(node.init) &&
+          t.isIdentifier(node.init.callee) &&
+          node.init.callee.name.match(/\$?reactive/)
+        )
+          return
+        node.init = createFrameCall(FrameApi.reactive, [node.init || t.identifier('')])
+      }
+    },
   }
 }
 
