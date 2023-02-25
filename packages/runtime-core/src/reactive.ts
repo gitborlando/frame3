@@ -74,7 +74,7 @@ function trigger(targetObj: object, key: IKey) {
 
   const keyTocallbacksMap = targetObjMap.get(targetObj)
   const callbacks = keyTocallbacksMap?.get(key)
-  callbacks?.forEach((callback) => callback())
+  callbacks?.forEach((callback) => callback !== currentCallback && callback())
 }
 
 export function effect<R, P extends object & { scheduler: Function }>(effectCallback: (props?: P) => R, props?: P) {

@@ -1,12 +1,11 @@
-import { $reactive, $ref, effect } from 'frame3'
+import { $reactive, effect } from 'frame3'
 import './counter.css'
 
-export const Counter = ({ $counter }) => {
+export const Counter = ({ init }) => {
+  let $counter = $reactive(init)
   effect(() => {
     console.log('props', $counter)
   })
-
-  let $div = $ref('div')
 
   return (
     <div className="center container">

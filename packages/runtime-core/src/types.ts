@@ -51,4 +51,5 @@ export interface IComponentInstance<P extends IVnodeProps = {}> {
   subVnode: IVnode
   props: P
   update(): void
+  passiveUpdate(props: IVnodeProps): void
 }
