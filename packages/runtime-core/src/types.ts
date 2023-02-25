@@ -8,7 +8,7 @@ export const VnodeType = {
   component: 'component' as const,
 }
 
-/** jsx的tag标签, 可以是Fuction(组件), string(html标签), 0(document.createTextNode) */
+/** jsx的tag标签, 可以是Function(组件), string(html标签), 0(document.createTextNode) */
 export type IVnodeJsxTag = IComponentFunction | string | 0
 export type IVnodeType = typeof VnodeType[keyof typeof VnodeType]
 export type IVnodeProps = Record<string, any>

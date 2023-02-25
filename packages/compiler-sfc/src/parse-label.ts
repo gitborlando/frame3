@@ -40,7 +40,6 @@ function parseReactiveLabel(path: NodePath<t.LabeledStatement>) {
     return path.remove()
   }
   ;(identifier as any).noNeedDotValue = true
-  // reatciveIdentifers.add(identifier.name)
 
   const reactiveCall = createFrameCall(FrameApi.reactive, [value])
   const reactiveAssignment = t.assignmentExpression('=', identifier, reactiveCall)
@@ -54,7 +53,6 @@ function parseComputedLabel(path: NodePath<t.LabeledStatement>) {
 
   const { left: identifier, right: computedExpression } = node.body.expression
   ;(identifier as any).noNeedDotValue = true
-  // reatciveIdentifers.add(babelGenerate(identifier).code)
 
   const computedCaller = t.identifier(FrameApi.computed)
   const computedCallback = t.isArrowFunctionExpression(computedExpression)

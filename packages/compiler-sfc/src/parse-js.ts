@@ -24,7 +24,7 @@ export function parseJs(js: string) {
     ...(parseConfig.isSFC ? { ...babelTraverseLabelOption() } : {}),
     ...babelTraverseDotValueOption(),
     ...babelTraverseJSXOption(),
-    ...babelTraversOnExitsOption(),
+    ...babelTraverseOnExitsOption(),
     ...babelTraverseOthersOption(),
   })
 
@@ -34,7 +34,7 @@ export function parseJs(js: string) {
 export function addDotValue(js: string) {
   init()
   const ast = babelParse(js)
-  babelTraverse(ast, { ...babelTraverseDotValueOption(), ...babelTraversOnExitsOption() })
+  babelTraverse(ast, { ...babelTraverseDotValueOption(), ...babelTraverseOnExitsOption() })
   return babelGenerate(ast).code.replace(/;$/, '')
 }
 
@@ -85,7 +85,7 @@ function babelTraverseOthersOption(): TraverseOptions<t.Node> {
   }
 }
 
-function babelTraversOnExitsOption(): TraverseOptions<t.Node> {
+function babelTraverseOnExitsOption(): TraverseOptions<t.Node> {
   return {
     exit(path) {
       if (t.isProgram(path.node)) {

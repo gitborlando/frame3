@@ -28,7 +28,7 @@ export const requiredFrameApis = new Set<keyof typeof FrameApi>()
 
 export const parseJsHooks: (() => string)[] = []
 
-export const parseState = {
+const defaultParseState = {
   toMountElement: '' as any,
   hasJsx: false,
   isInJsx: false,
@@ -38,6 +38,7 @@ export const parseState = {
   returnStatementAnchor: undefined as unknown as NodePath<t.ReturnStatement>,
   arrowFuncsTokenOutFrameJsx: [] as string[],
 }
+export let parseState = defaultParseState
 
 const id = '__' + uuid().slice(0, 4)
 export const FrameApi = new Proxy(
@@ -67,15 +68,8 @@ export function init() {
   requiredFrameApis.clear()
   parseJsHooks.length = 0
 
-  parseState.toMountElement = ''
-  parseState.hasJsx = false
-  parseState.isInJsx = false
-  parseState.propsGeneratedCode = ''
-  parseState.componentName = 'Component' + uuid()
-  parseState.wrapped = false
-  parseState.arrowFuncsTokenOutFrameJsx.length = 0
-
   parseConfig = defaultConfig
+  parseState = defaultParseState
 }
 
 export function uuid() {
@@ -84,7 +78,7 @@ export function uuid() {
 
 export function createFrameCall(
   api: string,
-  arguements: (t.Expression | t.SpreadElement | t.JSXNamespacedName | t.ArgumentPlaceholder)[]
+  argumentArray: (t.Expression | t.SpreadElement | t.JSXNamespacedName | t.ArgumentPlaceholder)[]
 ) {
-  return t.callExpression(t.identifier(api), arguements)
+  return t.callExpression(t.identifier(api), argumentArray)
 }

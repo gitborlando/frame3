@@ -4,10 +4,10 @@ import { init, parseConfig, parseJsHooks, uuid } from './shared'
 
 export let scopeId = uuid()
 
-export function parseSFC([jsSource, cssCource]: [string, string]) {
+export function parseSFC([jsSource, cssSource]: [string, string]) {
   init()
   scopeId = uuid()
-  parseJsHooks.push(() => parseCss(cssCource))
+  parseJsHooks.push(() => parseCss(cssSource))
   const js = parseJs(jsSource)
   return js
 }

@@ -49,12 +49,12 @@ function track(targetObj: object, key: IKey) {
   if (!targetObjMap.get(targetObj)) {
     targetObjMap.set(targetObj, new Map<IKey, Set<IEffectCallback>>())
   }
-  const keyTocallbacksMap = targetObjMap.get(targetObj)!
-  if (!keyTocallbacksMap?.get(key)) {
-    keyTocallbacksMap.set(key, new Set<IEffectCallback>())
+  const keyToCallbacksMap = targetObjMap.get(targetObj)!
+  if (!keyToCallbacksMap?.get(key)) {
+    keyToCallbacksMap.set(key, new Set<IEffectCallback>())
   }
   if (currentCallback.shouldTrack) {
-    keyTocallbacksMap.get(key)!.add(currentCallback)
+    keyToCallbacksMap.get(key)!.add(currentCallback)
   }
 }
 
@@ -72,8 +72,8 @@ function trigger(targetObj: object, key: IKey) {
     key = key === ManualTrackObjectKey ? key : 'length'
   }
 
-  const keyTocallbacksMap = targetObjMap.get(targetObj)
-  const callbacks = keyTocallbacksMap?.get(key)
+  const keyToCallbacksMap = targetObjMap.get(targetObj)
+  const callbacks = keyToCallbacksMap?.get(key)
   callbacks?.forEach((callback) => {
     if (callback === currentCallback) return
     callback.scheduler ? callback.scheduler(callback) : callback()
