@@ -1,4 +1,4 @@
-import { IComponentInstance, IComponentVnode } from './types'
+import { IComponentInstance, IComponentVnode, IVnodeProps } from './types'
 import { effect } from './reactive'
 import { updateVnode, mountVnode, specialDealVnodeChildren } from './vnode'
 
@@ -7,6 +7,7 @@ export function mountComponentVnode(componentVnode: IComponentVnode, parentDom: 
   const renderFunction = componentFunction(props)
   const componentInstance = (componentVnode.componentInstance = {
     isMounted: false,
+    props,
   } as IComponentInstance)
 
   componentInstance.update = () => {
@@ -31,6 +32,12 @@ export function mountComponentVnode(componentVnode: IComponentVnode, parentDom: 
 }
 
 export function passiveUpdateComponent(preVnode: IComponentVnode, currentVnode: IComponentVnode, parentDom: Element) {
-  currentVnode.componentInstance = preVnode.componentInstance
+  currentVnode.componentInstance = preVnode.componentInstance!
+  if (propsIsEqual(preVnode.props, currentVnode.props)) return
+  currentVnode.componentInstance.props = preVnode.props
   currentVnode.componentInstance?.update()
+}
+
+function propsIsEqual(prevProps: IVnodeProps, currentProps: IVnodeProps) {
+  return Object.keys(currentProps).every((key) => prevProps[key] === currentProps[key])
 }

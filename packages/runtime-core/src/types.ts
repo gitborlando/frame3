@@ -21,7 +21,6 @@ export interface IVnodeBase {
   /** vnode的类型, 比如是dom节点还是组件或者其他啥的 */
   type: IVnodeType
   props: IVnodeProps
-  componentInstance: IComponentInstance | null
   key: any
 }
 
@@ -32,14 +31,15 @@ export type IComponentVnode = Omit<IVnodeBase, 'jsxTag'> & {
   jsxTag: IComponentFunction
   el: Element | Text | null
   children: any[]
+  componentInstance: IComponentInstance | null
 }
-export type IElementVnode = Omit<IVnodeBase, 'jsxTag' | 'el' | 'componentInstance'> & {
+export type IElementVnode = Omit<IVnodeBase, 'jsxTag'> & {
   /** dom的tag标签 */
   jsxTag: string
   el: Element | null
   children: IVnode[]
 }
-export type ITextNodeVnode = Omit<IVnodeBase, 'jsxTag' | 'el' | 'componentInstance' | 'children'> & {
+export type ITextNodeVnode = Omit<IVnodeBase, 'jsxTag'> & {
   /** dom的tag标签 */
   jsxTag: 0
   el: Text | null
