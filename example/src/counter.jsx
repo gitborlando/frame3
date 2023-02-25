@@ -1,18 +1,20 @@
-import { $ref, effect } from 'frame3'
+import { $reactive, $ref, effect } from 'frame3'
 import './counter.css'
 
 export const Counter = ({ $counter }) => {
   effect(() => {
-    console.log($counter)
+    console.log('props', $counter)
   })
 
   let $div = $ref('div')
 
   return (
-    <div ref={$div} className="center container">
+    <div className="center container">
+      {/* {console.log('child render')} */}
       <div className="center operator" onClick={() => $counter--}>
         -
       </div>
+      {console.log('child render')}
       <div className="center shower">{$counter}</div>
       <div className="center operator" onClick={() => $counter++}>
         +

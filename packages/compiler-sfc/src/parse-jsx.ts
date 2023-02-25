@@ -57,6 +57,7 @@ export function babelTraverseJSXOption(): TraverseOptions<any> {
     },
     JSXExpressionContainer(path) {
       const { node, parent: parentNode } = path
+      if (t.isJSXEmptyExpression(node.expression)) return path.remove()
       if (t.isJSXAttribute(parentNode)) return
 
       const currentJsx = getJsxStackLastOne()
