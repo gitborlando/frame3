@@ -51,6 +51,8 @@ function setDomAttributeFromVnodeProps(preVnode: IElementVnode | null, currentVn
         .map(([csskey, cssValue]) => `${csskey}: ${cssValue}`)
         .join(';')
       el.setAttribute('style', styleString)
+    } else if (propkey === 'ref') {
+      propValue.value = el
     } else if (propkey === 'className') {
       el.className = propValue
     } else if (propkey === 'scope-id') {

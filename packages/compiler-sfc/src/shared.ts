@@ -42,10 +42,11 @@ export const parseState = {
 const id = '__' + uuid().slice(0, 4)
 export const FrameApi = new Proxy(
   {
-    h: 'h' + id,
     reactive: 'reactive' + id,
     computed: 'computed' + id,
     effect: 'effect' + id,
+    ref: 'ref' + id,
+    h: 'h' + id,
     mount: 'mount' + id,
   },
   {

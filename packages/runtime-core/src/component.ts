@@ -5,10 +5,9 @@ import { updateVnode, mountVnode, specialDealVnodeChildren } from './vnode'
 export function mountComponentVnode(componentVnode: IComponentVnode, parentDom: Element) {
   const { jsxTag: componentFunction, props } = componentVnode
   const renderFunction = componentFunction(props)
-  const componentInstance = {
+  const componentInstance = (componentVnode.componentInstance = {
     isMounted: false,
-  } as IComponentInstance
-  componentVnode.componentInstance = componentInstance
+  } as IComponentInstance)
 
   componentInstance.update = () => {
     if (!componentInstance.isMounted) {
@@ -28,6 +27,7 @@ export function mountComponentVnode(componentVnode: IComponentVnode, parentDom: 
   }
 
   effect(componentInstance.update)
+  if (props.hasOwnProperty('ref')) props.ref.value = componentInstance
 }
 
 export function passiveUpdateComponent(preVnode: IComponentVnode, currentVnode: IComponentVnode, parentDom: Element) {

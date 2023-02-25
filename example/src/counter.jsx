@@ -1,15 +1,15 @@
-import { $reactive, computed, effect } from 'frame3'
+import { $ref, effect } from 'frame3'
 import './counter.css'
 
-export default () => {
-  let $counter = $reactive(1)
-
+export const Counter = ({ $counter }) => {
   effect(() => {
     console.log($counter)
   })
 
+  let $div = $ref('div')
+
   return (
-    <div className="center container">
+    <div ref={$div} className="center container">
       <div className="center operator" onClick={() => $counter--}>
         -
       </div>

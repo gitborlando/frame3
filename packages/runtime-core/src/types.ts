@@ -46,8 +46,9 @@ export type ITextNodeVnode = Omit<IVnodeBase, 'jsxTag' | 'el' | 'componentInstan
   children: string[]
 }
 
-export interface IComponentInstance {
-  update(): void
+export interface IComponentInstance<P extends IVnodeProps = {}> {
   isMounted: boolean
   subVnode: IVnode
+  props: P
+  update(): void
 }

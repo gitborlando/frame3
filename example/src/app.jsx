@@ -1,9 +1,16 @@
-import Counter from './counter'
+import { $reactive, $ref, effect } from 'frame3'
+import { Counter } from './counter'
 
-export default () => {
+export const App = () => {
+  let $counter = $reactive(1)
+  let $child = $ref(Counter)
+
+  effect(() => console.log('child', { ...$child }))
+
   return (
     <div className="root">
-      <Counter></Counter>
+      parent is {$counter}
+      <Counter ref={$child} $counter></Counter>
     </div>
   )
 }

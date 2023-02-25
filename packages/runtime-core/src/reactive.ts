@@ -1,4 +1,5 @@
 import { is } from './shared'
+import { IComponentFunction, IComponentInstance, IVnode, IVnodeProps } from './types'
 
 type IKey = string | symbol
 interface ICallback<T = any> {
@@ -59,7 +60,7 @@ function track(targetObj: object, key: IKey) {
 
 const ManualTrackObjectKey = Symbol('manual-track-object-key')
 
-export function $track<T extends object>(object: T) {
+export function manualTrack<T extends object>(object: T) {
   track(object, ManualTrackObjectKey)
   return object
 }
@@ -106,4 +107,18 @@ export function computed<T>(cb: ICallback<T>): { value: T } {
 
 export function $computed<T>(cb: ICallback<T>): T {
   return cb()
+}
+
+export function ref<K extends keyof HTMLElementTagNameMap>(value: K): { value: HTMLElementTagNameMap[K] | undefined } {
+  return reactive<HTMLElementTagNameMap[K]>()
+}
+
+export function $ref<P extends IVnodeProps>(tagName: IComponentFunction<P>): IComponentInstance<P> | undefined
+export function $ref<K extends keyof HTMLElementTagNameMap>(tagName: K): HTMLElementTagNameMap[K] | undefined
+export function $ref<HTMLTagName extends keyof HTMLElementTagNameMap, P extends IVnodeProps>(
+  tagName: IComponentFunction<P> | HTMLTagName
+) {
+  return typeof tagName === 'function'
+    ? $reactive<IComponentInstance<P>>()
+    : $reactive<HTMLElementTagNameMap[HTMLTagName]>()
 }

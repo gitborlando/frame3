@@ -1,2 +1,2 @@
-export { reactive, computed, effect, $reactive, $computed, $track } from './reactive'
+export { reactive, computed, ref, $reactive, $computed, $ref, effect, manualTrack } from './reactive'
 export { h, mount } from './vnode'

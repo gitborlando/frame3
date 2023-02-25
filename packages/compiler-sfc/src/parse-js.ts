@@ -45,26 +45,24 @@ function babelTraverseDotValueOption(): TraverseOptions<t.Node> {
         !path.node.name.startsWith('$') ||
         path.node.name === '$' ||
         path.node.name.match(/.value$/) ||
-        path.node.name.match(/\$(reactive|computed|track)/) ||
+        path.node.name.match(/\$(reactive|computed|ref)/) ||
         t.isObjectProperty(path.parent) ||
         t.isImportSpecifier(path.parent) ||
-        t.isVariableDeclarator(path.parent)
+        t.isVariableDeclarator(path.parent) ||
+        t.isJSXExpressionContainer(path.parent)
       )
         return
       path.replaceWith(t.identifier(`${path.node.name}.value`))
       path.skip()
     },
     CallExpression(path) {
-      if (t.isIdentifier(path.node.callee) && path.node.callee.name.match(/\$(reactive|computed)/)) {
+      if (t.isIdentifier(path.node.callee) && path.node.callee.name.match(/\$(reactive|computed|ref)/)) {
         const args = path.node.arguments
-        if (path.node.callee.name === '$reactive') {
-          path.replaceWith(createFrameCall(FrameApi.reactive, args))
-          path.skip()
-        }
-        if (path.node.callee.name === '$computed') {
-          path.replaceWith(createFrameCall(FrameApi.computed, args))
-          path.skip()
-        }
+        const callee = { $reactive: FrameApi.reactive, $computed: FrameApi.computed, $ref: FrameApi.ref }[
+          path.node.callee.name
+        ]
+        path.replaceWith(createFrameCall(callee!, args))
+        path.skip()
       }
     },
   }
