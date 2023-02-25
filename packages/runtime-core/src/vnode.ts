@@ -53,9 +53,9 @@ export function h(jsxTag: IVnodeJsxTag, props: IVnodeProps = {}, children: any[]
 export function specialDealVnodeChildren(children: any[]): IVnode[] {
   const newVnodeChildren: IVnode[] = []
   children.forEach((child) => {
-    if (is.string(child) || is.number(child)) return newVnodeChildren.push(h(0, {}, [child]))
+    if (is.multi(child, 'string|number')) return newVnodeChildren.push(h(0, {}, [child]))
+    if (is.multi(child, 'undefined|null')) return newVnodeChildren.push(h(0, {}, ['']))
     if (is.array(child)) return newVnodeChildren.push(...specialDealVnodeChildren(child))
-    if (is.undefined(child) || is.null(child)) return
     newVnodeChildren.push(child)
   })
   return newVnodeChildren

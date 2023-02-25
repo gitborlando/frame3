@@ -10,18 +10,11 @@ const plugin = {
   name: 'buildOnEnd',
   setup(build) {
     build.onEnd(() => {
-      if (existsSync('./packages/runtime-core/index.js')) {
-        writeFileSync(
-          './packages/frame3/runtime-core/index.js',
-          readFileSync('./packages/runtime-core/index.js', 'utf-8')
-        )
-      }
-      if (existsSync('./packages/compiler-sfc/index.js')) {
-        writeFileSync(
-          './packages/frame3/compiler-sfc/index.js',
-          readFileSync('./packages/compiler-sfc/index.js', 'utf-8')
-        )
-      }
+      ;['runtime-core/index.js', 'compiler-sfc/index.js'].forEach((i) => {
+        if (existsSync(`./packages/${i}`)) {
+          writeFileSync(`./packages/frame3/${i}`, readFileSync(`./packages/${i}`, 'utf-8'))
+        }
+      })
     })
   },
 }
@@ -34,7 +27,6 @@ esbuild
     outdir: './packages',
     minify: true,
     plugins: [plugin],
-    // sourcemap: true,
   })
   .then((ctx) => {
     ctx.watch()

@@ -3,14 +3,16 @@ import { mountVnode, unmountVnode, updateVnode } from './vnode'
 
 export function diffElementVnodeChildren(prevVnode: IElementVnode, currentVnode: IElementVnode, parentDom: Element) {
   //
-  if (isElementWithOneTextNodeChild(prevVnode) || isElementWithOneTextNodeChild(currentVnode)) {
-    if (isElementWithOneTextNodeChild(prevVnode) && isElementWithOneTextNodeChild(currentVnode)) {
+  if (isNormalTextElement(prevVnode) || isNormalTextElement(currentVnode)) {
+    if (isNormalTextElement(prevVnode) && isNormalTextElement(currentVnode)) {
       parentDom.textContent = currentVnode.children[0].children[0]
     }
-    if (isElementWithOneTextNodeChild(prevVnode) && !isElementWithOneTextNodeChild(currentVnode)) {
-      for (const child of currentVnode.children) mountVnode(child, parentDom)
+    if (isNormalTextElement(prevVnode) && !isNormalTextElement(currentVnode)) {
+      for (const child of currentVnode.children) {
+        mountVnode(child, parentDom)
+      }
     }
-    if (!isElementWithOneTextNodeChild(currentVnode) && isElementWithOneTextNodeChild(currentVnode)) {
+    if (!isNormalTextElement(currentVnode) && isNormalTextElement(currentVnode)) {
       unmountVnode(prevVnode)
       parentDom.textContent = currentVnode.children[0].children[0]
     }
@@ -23,10 +25,8 @@ export function diffElementVnodeChildren(prevVnode: IElementVnode, currentVnode:
   }
 }
 
-function isElementWithOneTextNodeChild(
-  vnode: IVnode
-): vnode is Omit<IElementVnode, 'children'> & { children: ITextNodeVnode[] } {
-  return vnode.children.length === 1 && vnode.children[0]?.type === VnodeType.textNode
+function isNormalTextElement(vnode: IVnode): vnode is Omit<IElementVnode, 'children'> & { children: ITextNodeVnode[] } {
+  return vnode.children.length <= 1 && vnode.children[0]?.type === VnodeType.textNode
 }
 
 function diffUnKeyedChildren(prevChildren: IVnode[], currentChildren: IVnode[], parentDom: Element) {

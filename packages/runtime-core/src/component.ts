@@ -4,26 +4,22 @@ import { updateVnode, mountVnode, specialDealVnodeChildren } from './vnode'
 
 export function mountComponentVnode(componentVnode: IComponentVnode, parentDom: Element) {
   const { jsxTag: componentFunction, props } = componentVnode
-  const componentInstance = {
+  const componentInstance = (componentVnode.componentInstance = {
     isMounted: false,
     props,
-  } as IComponentInstance
-  componentVnode.componentInstance = componentInstance
+  } as IComponentInstance)
+
   let renderVnodeFunction = componentFunction(props)
 
   componentInstance.update = () => {
-    if (!componentInstance.isMounted) {
-      const currentSubVnode = renderVnodeFunction()
-      currentSubVnode.children = specialDealVnodeChildren(currentSubVnode.children)
-      mountVnode(currentSubVnode, parentDom)
-      componentInstance.subVnode = currentSubVnode
-      componentVnode.el = currentSubVnode.el
-      return (componentInstance.isMounted = true)
-    }
-    const prevSubVnode = componentInstance.subVnode
     const currentSubVnode = renderVnodeFunction()
     currentSubVnode.children = specialDealVnodeChildren(currentSubVnode.children)
-    updateVnode(prevSubVnode, currentSubVnode, parentDom)
+    if (!componentInstance.isMounted) {
+      mountVnode(currentSubVnode, parentDom)
+      componentInstance.isMounted = true
+    } else {
+      updateVnode(componentInstance.subVnode, currentSubVnode, parentDom)
+    }
     componentInstance.subVnode = currentSubVnode
     componentVnode.el = currentSubVnode.el
   }
@@ -34,7 +30,10 @@ export function mountComponentVnode(componentVnode: IComponentVnode, parentDom: 
     componentInstance.update()
   }
 
-  effect(componentInstance.update)
+  effect(componentInstance.update, {
+    scheduler: (fn: any) => Promise.resolve().then(fn),
+  })
+
   if (props.hasOwnProperty('ref')) props.ref.value = componentInstance
 }
 

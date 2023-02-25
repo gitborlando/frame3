@@ -15,7 +15,7 @@
   "type": "module",
   "scripts": {
     "dev": "node ./esbuild.js",
-    "build-plugin": "node ./packages/vite-plugin/build.js"
+    "dev-plugin": "node ./packages/vite-plugin/build.js"
   },
   "devDependencies": {
     "@types/node": "^18.14.0",

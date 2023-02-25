@@ -7,4 +7,7 @@ export const is = {
   function: (obj: any): obj is Function => Object.prototype.toString.call(obj) === '[object Function]',
   object: (obj: any): obj is object => Object.prototype.toString.call(obj) === '[object Object]',
   array: (obj: any): obj is any[] => Object.prototype.toString.call(obj) === '[object Array]',
+  multi(obj: any, types: string) {
+    return types.split('|').some((type) => this[type.trim()]?.(obj))
+  },
 }

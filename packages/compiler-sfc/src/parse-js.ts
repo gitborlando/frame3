@@ -49,7 +49,6 @@ function babelTraverseDotValueOption(): TraverseOptions<t.Node> {
         t.isObjectProperty(path.parent) ||
         t.isImportSpecifier(path.parent) ||
         t.isVariableDeclarator(path.parent) ||
-        t.isAssignmentExpression(path.parent) ||
         t.isJSXExpressionContainer(path.parent)
       )
         return
