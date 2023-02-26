@@ -7,17 +7,13 @@ interface ICounterProps {
 
 export const Counter = ({ init }: ICounterProps) => {
   let $counter = init
-  effect(() => {
-    console.log('props', $counter)
-  })
+  effect(() => console.log('props', $counter))
 
   return (
     <div className="center container">
-      {/* {console.log('child render')} */}
       <div className="center operator" onClick={() => $counter--}>
         -
       </div>
-      {console.log('child render')}
       <div className="center shower">{$counter}</div>
       <div className="center operator" onClick={() => $counter++}>
         +
