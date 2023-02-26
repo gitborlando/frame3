@@ -8,7 +8,7 @@ import {
   IVnodeProps,
   VnodeType,
 } from './types'
-import { is } from './shared'
+import { is, vnodeIs } from './shared'
 import { mountComponentVnode as mountComponentVnode, passiveUpdateComponent } from './component'
 import {
   mountElement as mountElementVnode,
@@ -61,13 +61,6 @@ export function specialDealVnodeChildren(children: any[]): IVnode[] {
   return newVnodeChildren
 }
 
-export function mount(vnode: IVnode, parentDom: Element): void
-export function mount(componentFunction: IComponentFunction, parentDom: Element): void
-export function mount(toMount: IVnode | IComponentFunction, parentDom: Element): void {
-  const componentFunction = typeof toMount === 'function' ? toMount : () => () => toMount
-  mountComponentVnode(h(componentFunction, {}, []), parentDom)
-}
-
 /**
  * @description 从虚拟dom中创建真实dom节点并挂载到目标dom节点
  * @param vnode 虚拟dom对象
@@ -109,8 +102,6 @@ export function unmountVnode(vnode: IVnode) {
   }
 }
 
-export const vnodeIs = {
-  component: (vnode: IVnode | null): vnode is IComponentVnode => vnode?.type === VnodeType.component,
-  element: (vnode: IVnode | null): vnode is IElementVnode => vnode?.type === VnodeType.element,
-  textNode: (vnode: IVnode | null): vnode is ITextNodeVnode => vnode?.type === VnodeType.textNode,
+export function mount(componentFunction: Function, parentDom: Element): void {
+  mountComponentVnode(h(componentFunction as IComponentFunction, {}, []), parentDom)
 }

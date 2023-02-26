@@ -2,14 +2,19 @@ import { IComponentInstance, IComponentVnode, IVnodeProps } from './types'
 import { effect } from './reactive'
 import { updateVnode, mountVnode, specialDealVnodeChildren } from './vnode'
 
+/**
+ * 挂载组件
+ * @param componentVnode 组件vnode
+ * @param parentDom
+ */
 export function mountComponentVnode(componentVnode: IComponentVnode, parentDom: Element) {
-  const { jsxTag: componentFunction, props } = componentVnode
+  const { jsxTag: componentFunction, props, children } = componentVnode
   const componentInstance = (componentVnode.componentInstance = {
     isMounted: false,
     props,
   } as IComponentInstance)
 
-  let renderVnodeFunction = componentFunction(props)
+  let renderVnodeFunction = componentFunction({ ...props, children })
 
   componentInstance.update = () => {
     const currentSubVnode = renderVnodeFunction()
@@ -24,8 +29,8 @@ export function mountComponentVnode(componentVnode: IComponentVnode, parentDom: 
     componentVnode.el = currentSubVnode.el
   }
 
-  componentInstance.passiveUpdate = (props: IVnodeProps) => {
-    renderVnodeFunction = componentFunction(props)
+  componentInstance.passiveUpdate = (props: IVnodeProps, children: any[]) => {
+    renderVnodeFunction = componentFunction({ ...props, children })
     componentInstance.props = props
     componentInstance.update()
   }
@@ -40,7 +45,7 @@ export function mountComponentVnode(componentVnode: IComponentVnode, parentDom: 
 export function passiveUpdateComponent(preVnode: IComponentVnode, currentVnode: IComponentVnode, parentDom: Element) {
   currentVnode.componentInstance = preVnode.componentInstance!
   if (propsIsEqual(preVnode.props, currentVnode.props)) return
-  currentVnode.componentInstance.passiveUpdate(currentVnode.props)
+  currentVnode.componentInstance.passiveUpdate(currentVnode.props, currentVnode.children)
 }
 
 function propsIsEqual(prevProps: IVnodeProps, currentProps: IVnodeProps) {
