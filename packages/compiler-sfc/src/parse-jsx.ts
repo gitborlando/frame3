@@ -18,6 +18,9 @@ export function babelTraverseJSXOption(): TraverseOptions<any> {
   jsxStack.length = 0
   return {
     JSXOpeningElement(path) {
+      parseState.hasJsx = true
+      parseState.isInJsx = true
+
       const { node, parentPath } = path
       const currentJsx: IJsx = {
         tag: (node.name as unknown as t.Identifier).name,
@@ -27,20 +30,16 @@ export function babelTraverseJSXOption(): TraverseOptions<any> {
         jsxElementPath: parentPath,
       }
 
-      const prevJsx = getJsxStackLastOne()
-      if (!prevJsx) return void jsxStack.push(currentJsx)
       jsxStack.push(currentJsx)
-
-      if (!prevJsx.isSelfClose && t.isJSXElement(currentJsx.jsxElementPath.parentPath?.node)) {
-        prevJsx.children.push(currentJsx.jsxElementPath.node)
-      }
       if (currentJsx.isSelfClose) {
-        currentJsx.jsxElementPath.replaceWith(createHydrateCall(prevJsx))
+        currentJsx.jsxElementPath.replaceWith(createHydrateCall(currentJsx))
         jsxStack.pop()
       }
 
-      parseState.hasJsx = true
-      parseState.isInJsx = true
+      const prevJsx = jsxStack.slice(-2, -1)[0]
+      if (prevJsx) {
+        prevJsx.children.push(currentJsx.jsxElementPath.node)
+      }
     },
     JSXAttribute({ node }) {
       const { name, value } = node
