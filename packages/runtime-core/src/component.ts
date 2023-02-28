@@ -7,42 +7,40 @@ import { updateVnode, mountVnode, specialDealVnodeChildren } from './vnode'
  * @param componentVnode 组件vnode
  * @param parentDom
  */
-export function mountComponentVnode(componentVnode: IComponentVnode, parentDom: Element) {
+export function mountComponentVnode(componentVnode: IComponentVnode) {
   const { jsxTag: componentFunction, props, children } = componentVnode
   const componentInstance = (componentVnode.componentInstance = {
     isMounted: false,
-    props,
+    props: { ...props, children },
   } as IComponentInstance)
 
-  let renderVnodeFunction = componentFunction({ ...props, children })
+  let renderVnodeFunction = componentFunction(componentInstance.props)
 
   componentInstance.update = () => {
     const currentSubVnode = renderVnodeFunction()
     currentSubVnode.children = specialDealVnodeChildren(currentSubVnode.children)
+
     if (!componentInstance.isMounted) {
-      mountVnode(currentSubVnode, parentDom)
+      mountVnode(currentSubVnode)
       componentInstance.isMounted = true
     } else {
-      updateVnode(componentInstance.subVnode, currentSubVnode, parentDom)
+      updateVnode(componentInstance.subVnode, currentSubVnode)
     }
     componentInstance.subVnode = currentSubVnode
     componentVnode.el = currentSubVnode.el
   }
 
   componentInstance.passiveUpdate = (props: IVnodeProps, children: any[]) => {
-    renderVnodeFunction = componentFunction({ ...props, children })
-    componentInstance.props = props
+    componentInstance.props = { ...props, children }
+    renderVnodeFunction = componentFunction(componentInstance.props)
     componentInstance.update()
   }
 
-  effect(componentInstance.update, {
-    scheduler: (fn: any) => Promise.resolve().then(fn),
-  })
-
   if (props.hasOwnProperty('ref')) props.ref.value = componentInstance
+  effect(componentInstance.update)
 }
 
-export function passiveUpdateComponent(preVnode: IComponentVnode, currentVnode: IComponentVnode, parentDom: Element) {
+export function passiveUpdateComponent(preVnode: IComponentVnode, currentVnode: IComponentVnode) {
   currentVnode.componentInstance = preVnode.componentInstance!
   if (propsIsEqual(preVnode.props, currentVnode.props)) return
   currentVnode.componentInstance.passiveUpdate(currentVnode.props, currentVnode.children)

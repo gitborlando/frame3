@@ -2,6 +2,7 @@ import {
   IComponentFunction,
   IComponentVnode,
   IElementVnode,
+  IFragmentVnode,
   ITextNodeVnode,
   IVnode,
   IVnodeJsxTag,
@@ -11,11 +12,14 @@ import {
 import { is, vnodeIs } from './shared'
 import { mountComponentVnode as mountComponentVnode, passiveUpdateComponent } from './component'
 import {
-  mountElement as mountElementVnode,
-  mountTextNode as mountTextNodeVnode,
-  updateElement,
-  updateTextNode,
+  getCurrentRenderContext,
+  insertChild,
+  remove,
+  setCurrentRenderContext,
+  setTextContent,
+  setVnodePropsToDomAttribute,
 } from './render-dom'
+import { diffVnodeChildren } from './diff'
 
 /**
  * @description 生成 vnode 的函数
@@ -25,25 +29,17 @@ import {
  * @returns 返回vnode
  */
 export function h(jsxTag: 0, props?: IVnodeProps, children?: any[]): ITextNodeVnode
+export function h(jsxTag: [], props?: IVnodeProps, children?: any[]): IFragmentVnode
 export function h(jsxTag: string, props?: IVnodeProps, children?: any[]): IElementVnode
-export function h<P extends IVnodeProps>(jsxTag: IComponentFunction<P>, props?: P, children?: any[]): IComponentVnode
+export function h(jsxTag: IComponentFunction, props?: IVnodeProps, children?: any[]): IComponentVnode
 export function h(jsxTag: IVnodeJsxTag, props: IVnodeProps = {}, children: any[] = []): IVnode {
-  const vnodeBase = {
-    props,
-    children,
-    el: null,
-    componentInstance: null,
-    key: props.key,
-  }
+  const vnodeBase = { props, children, el: null, key: props.key }
+  if (jsxTag === 0) return { type: VnodeType.textNode, jsxTag, ...vnodeBase }
+  if (is.function(jsxTag)) return { type: VnodeType.component, jsxTag, componentInstance: null, ...vnodeBase }
 
-  if (jsxTag === 0) {
-    return { type: VnodeType.textNode, jsxTag, ...vnodeBase }
-  }
-  if (is.string(jsxTag)) {
-    vnodeBase.children = specialDealVnodeChildren(vnodeBase.children)
-    return { type: VnodeType.element, jsxTag, ...vnodeBase }
-  }
-  return { type: VnodeType.component, jsxTag, ...vnodeBase }
+  vnodeBase.children = specialDealVnodeChildren(vnodeBase.children)
+  if (is.array(jsxTag)) return { type: VnodeType.fragment, jsxTag, anchor: null, ...vnodeBase }
+  return { type: VnodeType.element, jsxTag, ...vnodeBase }
 }
 
 /**
@@ -55,7 +51,7 @@ export function specialDealVnodeChildren(children: any[]): IVnode[] {
   children.forEach((child) => {
     if (is.multi(child, 'string|number')) return newVnodeChildren.push(h(0, {}, [child]))
     if (is.multi(child, 'undefined|null')) return newVnodeChildren.push(h(0, {}, ['']))
-    if (is.array(child)) return newVnodeChildren.push(...specialDealVnodeChildren(child))
+    if (is.array(child)) return newVnodeChildren.push(h([], {}, specialDealVnodeChildren(child)))
     newVnodeChildren.push(child)
   })
   return newVnodeChildren
@@ -67,41 +63,96 @@ export function specialDealVnodeChildren(children: any[]): IVnode[] {
  * @param parentDom 真实dom节点
  * @returns
  */
-export function mountVnode(vnode: IVnode, parentDom: Element) {
-  if (vnodeIs.component(vnode)) {
-    return mountComponentVnode(vnode, parentDom)
-  }
-  if (vnodeIs.element(vnode)) {
-    return mountElementVnode(vnode, parentDom)
-  }
-  if (vnodeIs.textNode(vnode)) {
-    return mountTextNodeVnode(vnode, parentDom)
+export function mountVnode(vnode: IVnode) {
+  if (vnodeIs.component(vnode)) return mountComponentVnode(vnode)
+  if (vnodeIs.fragment(vnode)) return mountFragmentVnode(vnode)
+  if (vnodeIs.element(vnode)) return mountElementVnode(vnode)
+  if (vnodeIs.textNode(vnode)) return mountTextNodeVnode(vnode)
+}
+
+export function updateVnode(preVnode: IVnode, currentVnode: IVnode) {
+  if (vnodeIs.component(currentVnode) && vnodeIs.component(preVnode))
+    return passiveUpdateComponent(preVnode, currentVnode)
+  if (vnodeIs.fragment(currentVnode) && vnodeIs.fragment(preVnode)) return updateFragmentVnode(preVnode, currentVnode)
+  if (vnodeIs.element(currentVnode) && vnodeIs.element(preVnode)) return updateElementVnode(preVnode, currentVnode)
+  if (vnodeIs.textNode(currentVnode) && vnodeIs.textNode(preVnode)) return updateTextNodeVnode(preVnode, currentVnode)
+  unMountVnode(preVnode)
+  mountVnode(currentVnode)
+}
+
+export function unMountVnode(vnode: IVnode): void {
+  if (vnodeIs.component(vnode) && vnode.componentInstance) return unMountVnode(vnode.componentInstance.subVnode)
+  if (vnodeIs.fragment(vnode)) return unMountFragmentVnode(vnode)
+  return remove(vnode.el)
+}
+
+export function mountFragmentVnode(fragmentVnode: IFragmentVnode) {
+  const el = (fragmentVnode.el = document.createTextNode('s'))
+  const anchor = (fragmentVnode.anchor = document.createTextNode('e'))
+  insertChild(el)
+  insertChild(anchor)
+  const { currentParentEl } = getCurrentRenderContext()
+  for (const childVnode of fragmentVnode.children) {
+    setCurrentRenderContext({ currentAnchorEl: anchor, currentParentEl })
+    mountVnode(childVnode)
   }
 }
 
-export function updateVnode(preVnode: IVnode, currentVnode: IVnode, parentDom: Element) {
-  if (vnodeIs.component(currentVnode) && vnodeIs.component(preVnode)) {
-    return passiveUpdateComponent(preVnode, currentVnode, parentDom)
-  }
-  if (vnodeIs.element(currentVnode) && vnodeIs.element(preVnode)) {
-    return updateElement(preVnode, currentVnode, parentDom)
-  }
-  if (vnodeIs.textNode(currentVnode) && vnodeIs.textNode(preVnode)) {
-    return updateTextNode(preVnode, currentVnode, parentDom)
-  }
+export function updateFragmentVnode(preVnode: IFragmentVnode, currentVnode: IFragmentVnode) {
+  const currentParentEl = (currentVnode.el = preVnode.el)?.parentElement!
+  const currentAnchorEl = (currentVnode.anchor = preVnode.anchor)
+  const resetRenderContext = setCurrentRenderContext({ currentAnchorEl, currentParentEl })
 
-  unmountVnode(preVnode)
-  mountVnode(currentVnode, parentDom)
+  diffVnodeChildren(preVnode, currentVnode)
+  resetRenderContext()
 }
 
-export function unmountVnode(vnode: IVnode) {
-  if (vnodeIs.component(vnode) && vnode.componentInstance) {
-    unmountVnode(vnode.componentInstance.subVnode)
-  } else {
-    vnode.el?.remove()
+export function unMountFragmentVnode(fragmentVnode: IFragmentVnode) {
+  let { el, anchor } = fragmentVnode
+  while (el !== anchor) {
+    let nextSibling = el?.nextSibling as any
+    remove(el)
+    el = nextSibling
+  }
+  remove(anchor)
+}
+
+export function mountElementVnode(elementVnode: IElementVnode) {
+  const el = document.createElement(elementVnode.jsxTag)
+  setVnodePropsToDomAttribute(null, elementVnode, el)
+  insertChild((elementVnode.el = el))
+
+  for (const childVnode of elementVnode.children) {
+    setCurrentRenderContext({ currentParentEl: el })
+    mountVnode(childVnode)
+  }
+}
+
+export function updateElementVnode(preVnode: IElementVnode, currentVnode: IElementVnode) {
+  const el = (currentVnode.el = preVnode.el)
+  if (!el) return
+
+  setVnodePropsToDomAttribute(preVnode, currentVnode, el)
+  const resetRenderContext = setCurrentRenderContext({ currentParentEl: el })
+  diffVnodeChildren(preVnode, currentVnode)
+  resetRenderContext()
+}
+
+export function mountTextNodeVnode(textNodeVnode: ITextNodeVnode) {
+  const textNode = document.createTextNode(textNodeVnode.children[0].toString())
+  insertChild((textNodeVnode.el = textNode))
+}
+
+export function updateTextNodeVnode(preVnode: IVnode, currentVnode: IVnode) {
+  const el = (currentVnode.el = preVnode.el)
+  const prevText = preVnode.children[0].toString()
+  const currentText = currentVnode.children[0].toString()
+  if (currentText !== prevText) {
+    setTextContent(currentText, el || undefined)
   }
 }
 
 export function mount(componentFunction: Function, parentDom: Element): void {
-  mountComponentVnode(h(componentFunction as IComponentFunction, {}, []), parentDom)
+  setCurrentRenderContext({ currentParentEl: parentDom })
+  mountComponentVnode(h(componentFunction as IComponentFunction, {}, []))
 }

@@ -1,3 +1,5 @@
+import { format } from 'prettier'
+import parserBabel from 'prettier/parser-babel'
 import { parseCss } from './parse-css'
 import { parseJs } from './parse-js'
 import { init, parseConfig, parseJsHooks, uuid } from './shared'
@@ -8,7 +10,8 @@ export function parseSFC([jsSource, cssSource]: [string, string]) {
   init()
   scopeId = uuid()
   parseJsHooks.push(() => parseCss(cssSource))
-  const js = parseJs(jsSource)
+  let js = parseJs(jsSource)
+  js = format(js, { parser: 'babel', plugins: [parserBabel] })
   return js
 }
 

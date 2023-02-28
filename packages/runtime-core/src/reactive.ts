@@ -1,4 +1,5 @@
 import { is } from './shared'
+import { queueScheduler } from './scheduler'
 import { IComponentFunction, IComponentInstance, IVnodeProps } from './types'
 
 type IKey = string | symbol
@@ -80,7 +81,10 @@ function trigger(targetObj: object, key: IKey) {
   })
 }
 
-export function effect<R, P extends object & { scheduler: Function }>(effectCallback: (props?: P) => R, props?: P) {
+export function effect<P extends Record<string, any> & { scheduler?: Function }>(
+  effectCallback: (props?: P) => any,
+  props?: P
+) {
   const callback = Object.assign(
     () => {
       try {
@@ -97,7 +101,7 @@ export function effect<R, P extends object & { scheduler: Function }>(effectCall
         currentCallback = callbackStack.slice(-1)[0]
       }
     },
-    { isFirstRun: true, shouldTrack: true, scheduler: props?.scheduler }
+    { isFirstRun: true, shouldTrack: true, scheduler: props?.scheduler || queueScheduler }
   )
   callback()
 }
@@ -108,20 +112,18 @@ export function computed<T>(cb: IEffectCallback<T>): { value: T } {
   return result
 }
 
-export function $computed<T>(cb: IEffectCallback<T>): T {
-  return cb()
-}
+export declare function $computed<T>(cb: IEffectCallback<T>): T
 
 export function ref<K extends keyof HTMLElementTagNameMap>(value: K): { value: HTMLElementTagNameMap[K] | undefined } {
   return reactive<HTMLElementTagNameMap[K]>()
 }
 
-export function $ref<P extends IVnodeProps>(tagName: IComponentFunction<P>): IComponentInstance<P> | undefined
+export function $ref(tagName: IComponentFunction): IComponentInstance | undefined
 export function $ref<K extends keyof HTMLElementTagNameMap>(tagName: K): HTMLElementTagNameMap[K] | undefined
 export function $ref<HTMLTagName extends keyof HTMLElementTagNameMap, P extends IVnodeProps>(
   tagName: IComponentFunction<P> | HTMLTagName
 ) {
   return typeof tagName === 'function'
-    ? $reactive<IComponentInstance<P>>()
+    ? $reactive<IComponentInstance>()
     : $reactive<HTMLElementTagNameMap[HTMLTagName]>()
 }

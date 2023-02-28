@@ -43,15 +43,15 @@ export default function frame3(): Plugin {
     handleHotUpdate({ file, server, modules }) {
       if (!file.match(/\.(js|ts|jsx|tsx|html)/)) return
 
-      const toUpadateModules = fileIds.map((id) => [...(server.moduleGraph.getModulesByFile(id) || [])]).flat()
-      const updates = toUpadateModules.map((module) => ({
+      const toUpdateModules = fileIds.map((id) => [...(server.moduleGraph.getModulesByFile(id) || [])]).flat()
+      const updates = toUpdateModules.map((module) => ({
         type: 'js-update' as const,
         path: module.file!,
         acceptedPath: module.file!,
         timestamp: new Date().getTime(),
       }))
       server.ws.send({ type: 'update', updates })
-      return [...modules, ...toUpadateModules]
+      return [...modules, ...toUpdateModules]
     },
   }
 }

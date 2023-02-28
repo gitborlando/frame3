@@ -1,36 +1,48 @@
-import { IElementVnode, ITextNodeVnode, IVnode } from './types'
-import { diffElementVnodeChildren } from './diff'
-import { mountVnode } from './vnode'
+import { IElementVnode } from './types'
 
-export function mountElement(elementVnode: IElementVnode, parentDom: Element) {
-  const el = document.createElement(elementVnode.jsxTag)
-  parentDom.appendChild((elementVnode.el = el))
+export function createElement(tagName: string) {
+  return document.createElement(tagName)
+}
 
-  setDomAttributeFromVnodeProps(null, elementVnode, el)
-  for (const childVnode of elementVnode.children) {
-    mountVnode(childVnode, el)
+export function createTextNode(content: string) {
+  return document.createTextNode(content)
+}
+
+export function insertChild(el: Element | Text) {
+  currentParentEl?.insertBefore(el, currentAnchorEl)
+}
+
+export function setTextContent(textContent: any, el: Element | Text = currentParentEl) {
+  el && (el.textContent = textContent)
+}
+
+export function remove(el?: Element | Text | null) {
+  el?.remove()
+}
+
+let currentParentEl: Element
+let currentAnchorEl: Text | null
+
+export function getCurrentRenderContext() {
+  return { currentParentEl, currentAnchorEl }
+}
+
+export function setCurrentRenderContext({
+  currentParentEl: parentEl,
+  currentAnchorEl: anchorEl,
+}: {
+  currentParentEl?: Element
+  currentAnchorEl?: Text | null
+}) {
+  const { currentParentEl: prevParentEl, currentAnchorEl: prevAnchorEl } = getCurrentRenderContext()
+  parentEl && (currentParentEl = parentEl)
+  currentAnchorEl = anchorEl || null
+  return function setBack() {
+    setCurrentRenderContext({ currentParentEl: prevParentEl, currentAnchorEl: prevAnchorEl })
   }
 }
 
-export function updateElement(preVnode: IElementVnode, currentVnode: IElementVnode, parentDom: Element) {
-  const el = (currentVnode.el = preVnode.el)
-  if (!el) return
-
-  setDomAttributeFromVnodeProps(preVnode, currentVnode, el)
-  diffElementVnodeChildren(preVnode, currentVnode, el)
-}
-
-export function mountTextNode(textNodeVnode: ITextNodeVnode, parentDom: Element) {
-  const el = document.createTextNode(textNodeVnode.children[0].toString())
-  parentDom.appendChild((textNodeVnode.el = el))
-}
-
-export function updateTextNode(preVnode: IVnode, currentVnode: IVnode, parentDom: Element) {
-  const el = (currentVnode.el = preVnode.el)
-  el && (el.textContent = currentVnode.children[0].toString())
-}
-
-function setDomAttributeFromVnodeProps(preVnode: IElementVnode | null, currentVnode: IElementVnode, el: Element) {
+export function setVnodePropsToDomAttribute(preVnode: IElementVnode | null, currentVnode: IElementVnode, el: Element) {
   const prevProps = preVnode ? preVnode.props : {}
   const currentProps = currentVnode.props
   const diffedProps = Object.entries(currentProps)

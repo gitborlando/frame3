@@ -4,12 +4,14 @@ export const VnodeType = {
   element: 'element' as const,
   /** 文本节点类型 */
   textNode: 'textNode' as const,
+  /** 片段节点类型 */
+  fragment: 'fragment' as const,
   /** 组件节点类型 */
   component: 'component' as const,
 }
 
 /** jsx的tag标签, 可以是Function(组件), string(html标签), 0(document.createTextNode) */
-export type IVnodeJsxTag = IComponentFunction | string | 0
+export type IVnodeJsxTag = IComponentFunction | [] | string | 0
 export type IVnodeType = typeof VnodeType[keyof typeof VnodeType]
 export type IVnodeProps = Record<string, any> & { children?: any[] }
 export type IComponentFunction<P extends IVnodeProps = {}> = (props: P) => () => IVnode
@@ -24,7 +26,7 @@ export interface IVnodeBase {
   key: any
 }
 
-export type IVnode = IComponentVnode | IElementVnode | ITextNodeVnode
+export type IVnode = IComponentVnode | IFragmentVnode | IElementVnode | ITextNodeVnode
 
 export type IComponentVnode = Omit<IVnodeBase, 'jsxTag'> & {
   /** 类似App, Button等的组件function */
@@ -45,11 +47,18 @@ export type ITextNodeVnode = Omit<IVnodeBase, 'jsxTag'> & {
   el: Text | null
   children: string[]
 }
+export type IFragmentVnode = Omit<IVnodeBase, 'jsxTag'> & {
+  /** dom的tag标签 */
+  jsxTag: []
+  el: Text | null
+  anchor: Text | null
+  children: any[]
+}
 
-export interface IComponentInstance<P extends IVnodeProps = {}> {
+export interface IComponentInstance {
   isMounted: boolean
   subVnode: IVnode
-  props: P
+  props: IVnodeProps
   update(): void
   passiveUpdate(props: IVnodeProps, children: any): void
 }
