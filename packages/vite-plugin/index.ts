@@ -1,14 +1,12 @@
 import { addDotValue, parseSFC } from '@frame3/compiler-sfc'
-import { Plugin } from 'vite'
-import { resolve } from 'path'
 import { readFileSync } from 'fs'
+import { resolve } from 'path'
+import { Plugin } from 'vite'
 
 const fileIds: string[] = []
-const AllImportCssIds: string[] = []
 
 export default function frame3(): Plugin {
   fileIds.length = 0
-  AllImportCssIds.length = 0
 
   return {
     name: 'vite-plugin-frame3',
@@ -33,26 +31,25 @@ export default function frame3(): Plugin {
         return parseSFC([
           code.replace(/(.*)<script>(.*)<\/script>/, '$2'),
           code.replace(/(.*)<style>(.*)<\/style>/, '$2'),
-        ]) /* || code */
+        ])
       }
-      if (id.match(/css$/) && AllImportCssIds.every((_id) => _id.split('/').pop() === id.split('/').pop())) {
-        return ' '
-      }
+      if (id.match(/css$/)) return ' '
+
       return code
     },
-    handleHotUpdate({ file, server, modules }) {
-      if (!file.match(/\.(js|ts|jsx|tsx|html)/)) return
+    // handleHotUpdate({ file, server, modules }) {
+    //   if (!file.match(/\.(js|ts|jsx|tsx|html|css)/)) return
 
-      const toUpdateModules = fileIds.map((id) => [...(server.moduleGraph.getModulesByFile(id) || [])]).flat()
-      const updates = toUpdateModules.map((module) => ({
-        type: 'js-update' as const,
-        path: module.file!,
-        acceptedPath: module.file!,
-        timestamp: new Date().getTime(),
-      }))
-      server.ws.send({ type: 'update', updates })
-      return [...modules, ...toUpdateModules]
-    },
+    //   const toUpdateModules = fileIds.map((id) => [...(server.moduleGraph.getModulesByFile(id) || [])]).flat()
+    //   const updates = toUpdateModules.map((module) => ({
+    //     type: 'js-update' as const,
+    //     path: module.file!,
+    //     acceptedPath: module.file!,
+    //     timestamp: new Date().getTime(),
+    //   }))
+    //   server.ws.send({ type: 'update', updates })
+    //   return [...modules, ...toUpdateModules]
+    // },
   }
 }
 
@@ -71,7 +68,6 @@ function matchImportCss(code: string) {
   while (importCssRe.test(code)) {
     code = code.replace(importCssRe, (_, $1) => {
       importCssIds.push($1)
-      AllImportCssIds.push($1)
       return '\n'
     })
   }

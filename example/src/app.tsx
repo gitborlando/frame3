@@ -1,11 +1,12 @@
-import { Router } from 'frame3'
 import './app.css'
-import { Counter } from './counter'
+import { Counter } from './pages/counter/counter'
+import { Frame3 } from './pages/frame3/frame3'
 
 export const App = () => {
   return (
-    <>
-      <Router path="abc/:init" component={Counter} />
-    </>
+    <div class="app">
+      <Frame3 />
+      <Counter />
+    </div>
   )
 }

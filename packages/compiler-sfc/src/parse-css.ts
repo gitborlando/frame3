@@ -12,13 +12,15 @@ export const parseCss = (css: string) => {
     enter(rule) {
       const { prelude, block } = rule
 
-      ;((prelude as SelectorList).children.last as Selector).children.appendData({
-        type: 'AttributeSelector',
-        name: { name: `scope-${scopeId}`, type: 'Identifier' },
-        matcher: null,
-        value: null,
-        flags: null,
-      })
+      if (!cssGenerate(prelude).match(/\*/)) {
+        ;((prelude as SelectorList).children.last as Selector).children.appendData({
+          type: 'AttributeSelector',
+          name: { name: `scope-${scopeId}`, type: 'Identifier' },
+          matcher: null,
+          value: null,
+          flags: null,
+        })
+      }
 
       walk(block, {
         visit: 'Declaration',

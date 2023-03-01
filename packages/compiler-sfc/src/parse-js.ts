@@ -62,7 +62,6 @@ function babelTraverseDotValueOption(): TraverseOptions<t.Node> {
           path.node.callee.name
         ]
         path.replaceWith(createFrameCall(callee!, args))
-        path.skip()
       }
     },
     VariableDeclarator(path) {
@@ -71,7 +70,7 @@ function babelTraverseDotValueOption(): TraverseOptions<t.Node> {
         if (
           t.isCallExpression(node.init) &&
           t.isIdentifier(node.init.callee) &&
-          node.init.callee.name.match(/\$?reactive/)
+          node.init.callee.name.match(/\$?(reactive|computed|ref)/)
         )
           return
         node.init = createFrameCall(FrameApi.reactive, [node.init || t.identifier('')])

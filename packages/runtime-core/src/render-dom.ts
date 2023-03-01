@@ -65,7 +65,7 @@ export function setVnodePropsToDomAttribute(preVnode: IElementVnode | null, curr
       el.setAttribute('style', styleString)
     } else if (propkey === 'ref') {
       propValue.value = el
-    } else if (propkey === 'className') {
+    } else if (propkey.match(/className|class/)) {
       el.className = propValue
     } else if (propkey === 'scope-id') {
       el.setAttribute(`scope-${propValue}`, '')

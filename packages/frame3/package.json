@@ -6,7 +6,10 @@
   "module": "./runtime-core/index.js",
   "types": "./runtime-core/index.ts",
   "exports": {
-    ".": {},
+    ".": {
+      "types": "./runtime-core/index.ts",
+      "default": "./runtime-core/index.js"
+    },
     "./jsx-runtime": {
       "types": "./jsx-runtime.d.ts",
       "default": "./runtime-core/index.js"

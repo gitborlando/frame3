@@ -1,10 +1,13 @@
-import shiyangyang from '../../assets/shiyangyang.png'
+import { $size } from '~/store/size'
+import shiyangyang from '../../assets/shiyangyang.jpeg'
 import './frame3.css'
 
-export const frame3 = () => {
-  return () => (
+export const Frame3 = () => {
+  cssVariables: $size
+  return (
     <div className="frame3">
-      <img src={shiyangyang}></img>
+      <img class="image" src={shiyangyang}></img>
+      <h1>Frame3</h1>
     </div>
   )
 }
