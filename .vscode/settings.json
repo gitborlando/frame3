@@ -1,7 +1,3 @@
 {
-  "editor.codeActionsOnSave": {
-    "source.organizeImports": false
-  },
-  "exportall.config.folderListener": ["/packages/compiler-sfc/src", "/packages/runtime-core/src"],
-  "cSpell.words": ["csskey", "vnode"]
+  "cSpell.words": ["csskey", "shiyangyang", "vnode"]
 }

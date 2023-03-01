@@ -1,10 +1,9 @@
 import { effect, reactive } from './reactive'
-import { IComponentFunction } from './types'
 import { h } from './vnode'
 
 interface IRouter {
   path: string
-  children: IComponentFunction[]
+  component: any
 }
 
 const hash = reactive(getHash())
@@ -12,7 +11,7 @@ window.addEventListener('hashchange', (e) => {
   hash.value = getHash()
 })
 
-export function Router({ path, children }: IRouter) {
+export function Router({ path, component }: IRouter) {
   const props = reactive<Record<string, any>>()
   const shouldRender = reactive(false)
   effect(() => {
@@ -20,9 +19,7 @@ export function Router({ path, children }: IRouter) {
     shouldRender.value = isMatch
     props.value = params
   })
-  return () => {
-    return h([], {}, shouldRender.value ? [h(children[0], props.value, [])] : [])
-  }
+  return () => h([], {}, shouldRender.value ? [h(component, props.value, [])] : [])
 }
 
 function matchPath(path: string, hash: string) {

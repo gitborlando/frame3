@@ -1,4 +1,4 @@
-import { effect } from 'frame3'
+import { $reactive } from 'frame3'
 import './counter.css'
 
 interface ICounterProps {
@@ -7,10 +7,9 @@ interface ICounterProps {
 
 export const Counter = ({ init }: ICounterProps) => {
   let $counter = init
-  effect(() => console.log('props', $counter))
-
-  return () => (
-    <div className="center container">
+  let $ref = $reactive<HTMLDivElement>()
+  return (
+    <div ref={$ref} className="center container">
       <div className="center operator" onClick={() => $counter--}>
         -
       </div>

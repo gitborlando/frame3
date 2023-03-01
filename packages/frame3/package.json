@@ -4,7 +4,14 @@
   "description": "A mini front-end framework",
   "type": "module",
   "module": "./runtime-core/index.js",
-  "types": "./runtime-core/index.d.ts",
+  "types": "./runtime-core/index.ts",
+  "exports": {
+    ".": {},
+    "./jsx-runtime": {
+      "types": "./jsx-runtime.d.ts",
+      "default": "./runtime-core/index.js"
+    }
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/gitborlando/frame3.git"

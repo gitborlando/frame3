@@ -87,9 +87,14 @@ function babelTraverseOthersOption(): TraverseOptions<t.Node> {
       path.remove()
     },
     ReturnStatement(path) {
-      if (!t.isJSXElement(path.node.argument) && !t.isJSXFragment(path.node.argument)) return
-
-      path.replaceWith(t.returnStatement(t.arrowFunctionExpression([], path.node.argument)))
+      const { argument } = path.node
+      if (
+        !t.isJSXElement(argument) &&
+        !t.isJSXFragment(argument) &&
+        !(t.isCallExpression(argument) && (argument.callee as t.Identifier).name === 'h')
+      )
+        return
+      path.replaceWith(t.returnStatement(t.arrowFunctionExpression([], argument)))
       parseState.returnStatementAnchor = path
       const cssInJs = babelTemplate.ast(parseJsHooks.map((parseCss) => parseCss()).join(''))
       path.insertBefore(cssInJs)
