@@ -1,19 +1,23 @@
+import { $computed, Router } from 'frame3'
 import './app.css'
 
+const Comp1 = ({ id }) => {
+  return () => <h1>ABC-{id}</h1>
+}
+const Comp2 = () => () => <h2>CBD</h2>
+
 export const App = () => {
-  let $arr = ['1', '2', '3']
-  return (
+  let $random = 0
+  setInterval(() => {
+    $random = Math.random() * 1000
+  }, 100)
+  return () => (
     <>
-      <div1 className="b c-123">123</div1>
-      <div2 className="b 456">
-        <div3 className="b c-456">456</div3>
-        {$arr.map((i) => (
-          <div4 className="b 789">789-{i}</div4>
-        ))}
-        <div5 className="b c-456">456</div5>
-      </div2>
-      <div6 className="b c-123">123</div6>
-      <button onClick={() => $arr.unshift('0')}>btn</button>
+      <a href={'#abc/' + $random}>abc</a>
+      <br></br>
+      <a href="#cbd">cbd</a>
+      <Router path="abc/:id">{Comp1}</Router>
+      <Router path="cbd">{Comp2}</Router>
     </>
   )
 }

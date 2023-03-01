@@ -12,9 +12,9 @@ export const VnodeType = {
 
 /** jsx的tag标签, 可以是Function(组件), string(html标签), 0(document.createTextNode) */
 export type IVnodeJsxTag = IComponentFunction | [] | string | 0
-export type IVnodeType = typeof VnodeType[keyof typeof VnodeType]
+export type IVnodeType = (typeof VnodeType)[keyof typeof VnodeType]
 export type IVnodeProps = Record<string, any> & { children?: any[] }
-export type IComponentFunction<P extends IVnodeProps = {}> = (props: P) => () => IVnode
+export type IComponentFunction = (props: IVnodeProps) => () => IVnode
 
 /** 虚拟dom对象 */
 export interface IVnodeBase {

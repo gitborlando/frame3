@@ -3,8 +3,8 @@ import { queueScheduler } from './scheduler'
 import { IComponentFunction, IComponentInstance, IVnodeProps } from './types'
 
 type IKey = string | symbol
-interface IEffectCallback<T = any> {
-  (): T
+interface IEffectCallback {
+  (): void
   isFirstRun: boolean
   shouldTrack: boolean
   scheduler?: Function
@@ -89,11 +89,11 @@ export function effect<P extends Record<string, any> & { scheduler?: Function }>
     () => {
       try {
         callbackStack.push((currentCallback = callback))
-        const parentCallback = callbackStack.slice(-2, -1)[0]
-        if (parentCallback && !parentCallback.isFirstRun) {
-          currentCallback.shouldTrack = false
-          return
-        }
+        // const parentCallback = callbackStack.slice(-2, -1)[0]
+        // if (parentCallback && !parentCallback.isFirstRun) {
+        //   currentCallback.shouldTrack = false
+        //   return
+        // }
         effectCallback(props)
         currentCallback.isFirstRun = false
       } finally {
@@ -106,23 +106,25 @@ export function effect<P extends Record<string, any> & { scheduler?: Function }>
   callback()
 }
 
-export function computed<T>(cb: IEffectCallback<T>): { value: T } {
+export function computed<T>(cb: () => T): { value: T } {
   const result = reactive('' as T)
   effect(() => (result.value = cb()))
   return result
 }
 
-export declare function $computed<T>(cb: IEffectCallback<T>): T
+export function $computed<T>(cb: () => T): T {
+  return cb()
+}
 
-export function ref<K extends keyof HTMLElementTagNameMap>(value: K): { value: HTMLElementTagNameMap[K] | undefined } {
-  return reactive<HTMLElementTagNameMap[K]>()
+export function ref(tagName: IComponentFunction): { value: IComponentInstance | undefined }
+export function ref<K extends keyof HTMLElementTagNameMap>(tagName: K): { value: HTMLElementTagNameMap[K] | undefined }
+export function ref<HTMLTagName extends keyof HTMLElementTagNameMap>(tagName: IComponentFunction | HTMLTagName) {
+  return typeof tagName === 'function' ? reactive<IComponentInstance>() : reactive<HTMLElementTagNameMap[HTMLTagName]>()
 }
 
 export function $ref(tagName: IComponentFunction): IComponentInstance | undefined
 export function $ref<K extends keyof HTMLElementTagNameMap>(tagName: K): HTMLElementTagNameMap[K] | undefined
-export function $ref<HTMLTagName extends keyof HTMLElementTagNameMap, P extends IVnodeProps>(
-  tagName: IComponentFunction<P> | HTMLTagName
-) {
+export function $ref<HTMLTagName extends keyof HTMLElementTagNameMap>(tagName: IComponentFunction | HTMLTagName) {
   return typeof tagName === 'function'
     ? $reactive<IComponentInstance>()
     : $reactive<HTMLElementTagNameMap[HTMLTagName]>()

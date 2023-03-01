@@ -1,6 +1,6 @@
 import { IComponentInstance, IComponentVnode, IVnodeProps } from './types'
 import { effect } from './reactive'
-import { updateVnode, mountVnode, specialDealVnodeChildren } from './vnode'
+import { updateVnode, mountVnode, specialDealVnodeChildren, unMountVnode } from './vnode'
 
 /**
  * 挂载组件
@@ -44,6 +44,10 @@ export function passiveUpdateComponent(preVnode: IComponentVnode, currentVnode: 
   currentVnode.componentInstance = preVnode.componentInstance!
   if (propsIsEqual(preVnode.props, currentVnode.props)) return
   currentVnode.componentInstance.passiveUpdate(currentVnode.props, currentVnode.children)
+}
+
+export function unMountComponentVnode(componentVnode: IComponentVnode) {
+  if (componentVnode.componentInstance) unMountVnode(componentVnode.componentInstance.subVnode)
 }
 
 function propsIsEqual(prevProps: IVnodeProps, currentProps: IVnodeProps) {

@@ -10,7 +10,7 @@ import {
   VnodeType,
 } from './types'
 import { is, vnodeIs } from './shared'
-import { mountComponentVnode as mountComponentVnode, passiveUpdateComponent } from './component'
+import { mountComponentVnode as mountComponentVnode, passiveUpdateComponent, unMountComponentVnode } from './component'
 import {
   getCurrentRenderContext,
   insertChild,
@@ -81,16 +81,17 @@ export function updateVnode(preVnode: IVnode, currentVnode: IVnode) {
 }
 
 export function unMountVnode(vnode: IVnode): void {
-  if (vnodeIs.component(vnode) && vnode.componentInstance) return unMountVnode(vnode.componentInstance.subVnode)
+  if (vnodeIs.component(vnode)) return unMountComponentVnode(vnode)
   if (vnodeIs.fragment(vnode)) return unMountFragmentVnode(vnode)
-  return remove(vnode.el)
+  return remove(vnode?.el)
 }
 
 export function mountFragmentVnode(fragmentVnode: IFragmentVnode) {
-  const el = (fragmentVnode.el = document.createTextNode('s'))
-  const anchor = (fragmentVnode.anchor = document.createTextNode('e'))
+  const el = (fragmentVnode.el = document.createTextNode(''))
+  const anchor = (fragmentVnode.anchor = document.createTextNode(''))
   insertChild(el)
   insertChild(anchor)
+
   const { currentParentEl } = getCurrentRenderContext()
   for (const childVnode of fragmentVnode.children) {
     setCurrentRenderContext({ currentAnchorEl: anchor, currentParentEl })
