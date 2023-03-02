@@ -13,11 +13,17 @@
 
 ### 体验
 
-```
-npm i frame3-vite-example
-cd frame3-vite-example
+```bash
+git clone https://github.com/gitborlando/frame3.git
+cd frame3
+pnpm install
+cd example
 npx vite
 ```
+
+或者
+
+[在线 play ground](https://stackblitz.com/edit/vite-pjko68?file=src/index.tsx)
 
 ### 例子
 
