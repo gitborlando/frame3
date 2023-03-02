@@ -5,3 +5,4 @@ node_modules
 esbuild.js
 tsconfig.json
 yarn.lock
+CHANGELOG.md

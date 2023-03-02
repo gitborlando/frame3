@@ -1,20 +1,14 @@
-import { is } from './shared'
 import { queueScheduler } from './scheduler'
-import { IComponentFunction, IComponentInstance, IVnodeProps } from './types'
+import { is } from './shared'
+import { IComponentFunction, IComponentInstance, IEffectCallback } from './types'
 
 type IKey = string | symbol
-interface IEffectCallback {
-  (): void
-  isFirstRun: boolean
-  shouldTrack: boolean
-  scheduler?: Function
-}
 
 export function reactive<T>(value: T): { value: T }
 export function reactive<T = any>(): { value: T | undefined }
 export function reactive(value?: unknown) {
-  return (function makeReactive<Obj extends object>(obj: Obj): Obj {
-    return new Proxy<Obj>(obj, {
+  return (function makeReactive<O extends object>(obj: O): O {
+    return new Proxy<O>(obj, {
       get(target, key) {
         track(target, key)
         const gotValue = Reflect.get(target, key)
@@ -36,12 +30,12 @@ export function $reactive(value?: unknown) {
   return value
 }
 
-let currentCallback: IEffectCallback | undefined = undefined
-const callbackStack: IEffectCallback[] = []
+let currentEffectCallback: IEffectCallback | undefined = undefined
+const effectCallbackStack: IEffectCallback[] = []
 const targetObjMap = new WeakMap<object, Map<IKey, Set<IEffectCallback>>>()
 
 function track(targetObj: object, key: IKey) {
-  if (!currentCallback) return
+  if (!currentEffectCallback) return
   if (is.array(targetObj)) {
     if (key === 'length') return
     key = key === ManualTrackObjectKey ? key : 'length'
@@ -54,9 +48,7 @@ function track(targetObj: object, key: IKey) {
   if (!keyToCallbacksMap?.get(key)) {
     keyToCallbacksMap.set(key, new Set<IEffectCallback>())
   }
-  if (currentCallback.shouldTrack) {
-    keyToCallbacksMap.get(key)!.add(currentCallback)
-  }
+  keyToCallbacksMap.get(key)!.add(currentEffectCallback)
 }
 
 const ManualTrackObjectKey = Symbol('manual-track-object-key')
@@ -76,34 +68,31 @@ function trigger(targetObj: object, key: IKey) {
   const keyToCallbacksMap = targetObjMap.get(targetObj)
   const callbacks = keyToCallbacksMap?.get(key)
   callbacks?.forEach((callback) => {
-    if (callback === currentCallback) return
+    if (callback === currentEffectCallback) return
     callback.scheduler ? callback.scheduler(callback) : callback()
   })
 }
 
 export function effect<P extends Record<string, any> & { scheduler?: Function }>(
-  effectCallback: (props?: P) => any,
+  callback: (props?: P) => any,
   props?: P
 ) {
-  const callback = Object.assign(
+  const effectCallback: IEffectCallback = Object.assign(
     () => {
       try {
-        callbackStack.push((currentCallback = callback))
-        // const parentCallback = callbackStack.slice(-2, -1)[0]
-        // if (parentCallback && !parentCallback.isFirstRun) {
-        //   currentCallback.shouldTrack = false
-        //   return
-        // }
-        effectCallback(props)
-        currentCallback.isFirstRun = false
+        if (!effectCallback.active) return
+
+        effectCallbackStack.push((currentEffectCallback = effectCallback))
+        callback(props)
       } finally {
-        callbackStack.pop()
-        currentCallback = callbackStack.slice(-1)[0]
+        effectCallbackStack.pop()
+        currentEffectCallback = effectCallbackStack.slice(-1)[0]
       }
     },
-    { isFirstRun: true, shouldTrack: true, scheduler: props?.scheduler || queueScheduler }
+    { active: true, scheduler: props?.scheduler || queueScheduler }
   )
-  callback()
+  effectCallback()
+  return effectCallback
 }
 
 export function computed<T>(cb: () => T): { value: T } {

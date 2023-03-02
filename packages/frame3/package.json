@@ -1,6 +1,6 @@
 {
   "name": "frame3",
-  "version": "1.0.24",
+  "version": "1.0.4",
   "description": "A mini front-end framework",
   "type": "module",
   "module": "./runtime-core/index.js",

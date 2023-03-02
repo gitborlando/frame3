@@ -1,3 +1,14 @@
+import { mountComponentVnode, unMountComponentVnode, updateComponentVnode } from './component'
+import { diffVnodeChildren } from './diff'
+import {
+  getCurrentRenderContext,
+  insertChild,
+  remove,
+  setCurrentRenderContext,
+  setTextContent,
+  setVnodePropsToDomAttribute,
+} from './render-dom'
+import { is, vnodeIs } from './shared'
 import {
   IComponentFunction,
   IComponentVnode,
@@ -9,17 +20,6 @@ import {
   IVnodeProps,
   VnodeType,
 } from './types'
-import { is, vnodeIs } from './shared'
-import { mountComponentVnode as mountComponentVnode, passiveUpdateComponent, unMountComponentVnode } from './component'
-import {
-  getCurrentRenderContext,
-  insertChild,
-  remove,
-  setCurrentRenderContext,
-  setTextContent,
-  setVnodePropsToDomAttribute,
-} from './render-dom'
-import { diffVnodeChildren } from './diff'
 
 /**
  * @description 生成 vnode 的函数
@@ -34,12 +34,14 @@ export function h(jsxTag: string, props?: IVnodeProps, children?: any[]): IEleme
 export function h(jsxTag: IComponentFunction, props?: IVnodeProps, children?: any[]): IComponentVnode
 export function h(jsxTag: IVnodeJsxTag, props: IVnodeProps = {}, children: any[] = []): IVnode {
   const vnodeBase = { props, children, el: null, key: props.key }
-  if (jsxTag === 0) return { type: VnodeType.textNode, jsxTag, ...vnodeBase }
-  if (is.function(jsxTag)) return { type: VnodeType.component, jsxTag, componentInstance: null, ...vnodeBase }
+  const { textNode, component, fragment, element } = VnodeType
+
+  if (jsxTag === 0) return { type: textNode, jsxTag, ...vnodeBase }
+  if (is.function(jsxTag)) return { type: component, jsxTag, componentInstance: null, ...vnodeBase }
 
   vnodeBase.children = specialDealVnodeChildren(vnodeBase.children)
-  if (is.array(jsxTag)) return { type: VnodeType.fragment, jsxTag, anchor: null, ...vnodeBase }
-  return { type: VnodeType.element, jsxTag, ...vnodeBase }
+  if (is.array(jsxTag)) return { type: fragment, jsxTag, anchor: null, ...vnodeBase }
+  return { type: element, jsxTag, ...vnodeBase }
 }
 
 /**
@@ -72,7 +74,7 @@ export function mountVnode(vnode: IVnode) {
 
 export function updateVnode(preVnode: IVnode, currentVnode: IVnode) {
   if (vnodeIs.component(currentVnode) && vnodeIs.component(preVnode))
-    return passiveUpdateComponent(preVnode, currentVnode)
+    return updateComponentVnode(preVnode, currentVnode)
   if (vnodeIs.fragment(currentVnode) && vnodeIs.fragment(preVnode)) return updateFragmentVnode(preVnode, currentVnode)
   if (vnodeIs.element(currentVnode) && vnodeIs.element(preVnode)) return updateElementVnode(preVnode, currentVnode)
   if (vnodeIs.textNode(currentVnode) && vnodeIs.textNode(preVnode)) return updateTextNodeVnode(preVnode, currentVnode)

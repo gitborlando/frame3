@@ -1,6 +1,6 @@
 {
   "name": "@frame3/example",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "type": "module",
   "scripts": {
     "dev": "npx vite"
@@ -8,13 +8,11 @@
   "author": "Gitborlando",
   "license": "ISC",
   "dependencies": {
-    "@frame3/compiler-sfc": "workspace:*",
     "frame3": "workspace:*",
     "vite-plugin-frame3": "workspace:*"
   },
   "devDependencies": {
     "http-server": "^14.1.1",
-    "server": "^1.0.38",
     "vite": "^4.1.4"
   }
 }

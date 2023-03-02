@@ -13,5 +13,6 @@ esbuild
   })
   .then((ctx) => {
     ctx.watch()
+    console.clear()
     console.log('watching plugin build')
   })

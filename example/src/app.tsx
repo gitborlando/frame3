@@ -1,6 +1,6 @@
 import './app.css'
-import { Counter } from './pages/counter/counter'
-import { Frame3 } from './pages/frame3/frame3'
+import { Counter } from './comps/counter/counter'
+import { Frame3 } from './comps/frame3/frame3'
 
 export const App = () => {
   return (

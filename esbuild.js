@@ -30,5 +30,6 @@ esbuild
   })
   .then((ctx) => {
     ctx.watch()
+    console.clear()
     console.log('is watching change...')
   })
