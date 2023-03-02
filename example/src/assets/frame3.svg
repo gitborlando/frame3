@@ -1,0 +1,33 @@
+<svg fill="none" viewBox="0 0 150 100" width="150" height="100" xmlns="http://www.w3.org/2000/svg">
+	<foreignObject width="200" height="100">
+		<div xmlns="http://www.w3.org/1999/xhtml">
+			<style>
+				<!--
+				h1 {
+				color: red;
+				animation: mymove 2s infinite;
+				}
+				-->
+				h1 {
+				font-size: 40px;
+				background: -webkit-linear-gradient(315deg, #42d392 25%, #647eff);
+				background-clip: text;
+				-webkit-background-clip: text;
+				-webkit-text-fill-color: transparent;
+				}
+				
+				@keyframes mymove {
+				from {
+				opacity: 1
+				}
+				to {
+				opacity: 0.5
+				}
+				}
+			</style>
+			<h1>
+				Frame3
+			</h1>
+		</div>
+	</foreignObject>
+</svg>

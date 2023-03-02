@@ -1,5 +1,5 @@
 {
-  "name": "@frame3/runtime-core",
+  "name": "frame3-runtime-core",
   "version": "1.0.4",
   "description": "A mini front-end framework's runtime-core",
   "type": "module",

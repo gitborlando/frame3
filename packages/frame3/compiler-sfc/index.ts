@@ -1,1 +1,1 @@
-export * from '@frame3/compiler-sfc'
+export * from 'frame3-compiler-sfc'

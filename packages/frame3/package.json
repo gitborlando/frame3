@@ -26,7 +26,7 @@
   "author": "Gitborlando",
   "license": "ISC",
   "dependencies": {
-    "@frame3/runtime-core": "workspace:*",
-    "@frame3/compiler-sfc": "workspace:*"
+    "frame3-runtime-core": "workspace:*",
+    "frame3-compiler-sfc": "workspace:*"
   }
 }

@@ -1,5 +1,5 @@
 {
-  "name": "@frame3/example",
+  "name": "frame3-vite-example",
   "version": "1.0.1",
   "type": "module",
   "scripts": {

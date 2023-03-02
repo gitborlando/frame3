@@ -1,4 +1,4 @@
-import { addDotValue, parseSFC } from '@frame3/compiler-sfc'
+import { addDotValue, parseSFC } from 'frame3-compiler-sfc'
 import { readFileSync } from 'fs'
 import { resolve } from 'path'
 import { Plugin } from 'vite'

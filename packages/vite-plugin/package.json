@@ -18,6 +18,6 @@
   "license": "ISC",
   "dependencies": {
     "vite": "^4.1.4",
-    "@frame3/compiler-sfc": "workspace:*"
+    "frame3-compiler-sfc": "workspace:*"
   }
 }

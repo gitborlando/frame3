@@ -1,17 +1,7 @@
-<center>
-<img src="../example/src/assets/shiyangyang.jpeg" style="zoom: 0.3"></img>
-<h1 class="title" style="font-size: 40px">Frame3</h1>
-</center>
-
-<style>
-  .title {
-    font-size: 40px;
-    background: -webkit-linear-gradient(315deg, #42d392 25%, #647eff);
-    background-clip: text;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-  }
-</style>
+<div align="center" >
+<img src="./example/src/assets/shiyangyang.jpeg" width="350px"></img>
+<div><img src="./example/src/assets/frame3.svg"></img></div>
+</div>
 
 ### 介绍
 
@@ -21,12 +11,11 @@
 - 尽管 frame3 是一个可正常使用(非玩具, 完美支持 ts)的框架, 但其更大的作用还是作为 vue3 的 mini 版本供开发者研究其原理
 - frame3 源码类型友好(几乎不用`any`), 每个函数都有 tsdoc, 重要部分有详细注释, 方便食用
 
-### Demo
+### 体验
 
 ```
-git clone https://github.com/gitborlando/frame3
-pnpm install
-cd example
+npm i frame3-vite-example
+cd frame3-vite-example
 npx vite
 ```
 

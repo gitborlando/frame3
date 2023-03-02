@@ -1,1 +1,1 @@
-export * from '@frame3/runtime-core'
+export * from 'frame3-runtime-core'
