@@ -1,5 +1,11 @@
 # vite-plugin-frame3
 
+## 1.1.1
+
+### Patch Changes
+
+- 添加 css 热重载
+
 ## 1.1.0
 
 ### Minor Changes

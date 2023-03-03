@@ -5,6 +5,9 @@ import { Plugin } from 'vite'
 
 const fileIds: string[] = []
 
+let currentTsxFileId = ''
+const cssToTsxImportMap: Record<string, string> = {}
+
 export default function frame3(): Plugin {
   fileIds.length = 0
 
@@ -20,8 +23,8 @@ export default function frame3(): Plugin {
       }
       if (id.match(/(j|t)sx$/)) {
         fileIds.push(id)
-
         parseSFC.config({ importApiFrom: 'frame3' })
+        currentTsxFileId = id
         const css = readCssFile(code, id.split('/').slice(0, -1).join('/'))
         return parseSFC([code, css])
       }
@@ -37,26 +40,30 @@ export default function frame3(): Plugin {
 
       return code
     },
-    // handleHotUpdate({ file, server, modules }) {
-    //   if (!file.match(/\.(js|ts|jsx|tsx|html|css)/)) return
+    handleHotUpdate({ file, server, modules }) {
+      const toUpdateIds = []
+      if (file.match(/css$/)) {
+        toUpdateIds.push(cssToTsxImportMap[file])
+      }
 
-    //   const toUpdateModules = fileIds.map((id) => [...(server.moduleGraph.getModulesByFile(id) || [])]).flat()
-    //   const updates = toUpdateModules.map((module) => ({
-    //     type: 'js-update' as const,
-    //     path: module.file!,
-    //     acceptedPath: module.file!,
-    //     timestamp: new Date().getTime(),
-    //   }))
-    //   server.ws.send({ type: 'update', updates })
-    //   return [...modules, ...toUpdateModules]
-    // },
+      const toUpdateModules = toUpdateIds.map((id) => [...(server.moduleGraph.getModulesByFile(id) || [])]).flat()
+      const updates = toUpdateModules.map((module) => ({
+        type: 'js-update' as const,
+        path: module.file!,
+        acceptedPath: module.file!,
+        timestamp: new Date().getTime(),
+      }))
+      server.ws.send({ type: 'update', updates })
+      return [...modules, ...toUpdateModules]
+    },
   }
 }
 
 function readCssFile(code: string, upperDir: string) {
   return matchImportCss(code)
     .map((id) => {
-      const path = resolve(upperDir, id)
+      const path = transPath(resolve(upperDir, id))
+      cssToTsxImportMap[path] = currentTsxFileId
       return readFileSync(path)
     })
     .join('\n')
@@ -72,4 +79,11 @@ function matchImportCss(code: string) {
     })
   }
   return importCssIds
+}
+
+function transPath(path: string) {
+  while (/\\/.test(path)) {
+    path = path.replace(/\\/, '/')
+  }
+  return path
 }
