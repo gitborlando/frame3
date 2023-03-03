@@ -1,5 +1,12 @@
 # @frame3/example
 
+## 1.1.1
+
+### Patch Changes
+
+- Updated dependencies
+  - frame3@1.1.1
+
 ## 1.1.0
 
 ### Minor Changes

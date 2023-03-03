@@ -1,5 +1,11 @@
 # @frame3/runtime-core
 
+## 1.1.1
+
+### Patch Changes
+
+- 修复 fragment 节点插入错误 bug
+
 ## 1.1.0
 
 ### Minor Changes

@@ -51,8 +51,8 @@ export function h(jsxTag: IVnodeJsxTag, props: IVnodeProps = {}, children: any[]
 export function specialDealVnodeChildren(children: any[]): IVnode[] {
   const newVnodeChildren: IVnode[] = []
   children.forEach((child) => {
-    if (is.multi(child, 'string|number')) return newVnodeChildren.push(h(0, {}, [child]))
-    if (is.multi(child, 'undefined|null')) return newVnodeChildren.push(h(0, {}, ['']))
+    if (is.string(child) || is.number(child)) return newVnodeChildren.push(h(0, {}, [child]))
+    if ([undefined, null, false].includes(child)) return newVnodeChildren.push(h(0, {}, ['']))
     if (is.array(child)) return newVnodeChildren.push(h([], {}, specialDealVnodeChildren(child)))
     newVnodeChildren.push(child)
   })
@@ -78,8 +78,14 @@ export function updateVnode(preVnode: IVnode, currentVnode: IVnode) {
   if (vnodeIs.fragment(currentVnode) && vnodeIs.fragment(preVnode)) return updateFragmentVnode(preVnode, currentVnode)
   if (vnodeIs.element(currentVnode) && vnodeIs.element(preVnode)) return updateElementVnode(preVnode, currentVnode)
   if (vnodeIs.textNode(currentVnode) && vnodeIs.textNode(preVnode)) return updateTextNodeVnode(preVnode, currentVnode)
+  return replaceVnode(preVnode, currentVnode)
+}
+
+export function replaceVnode(preVnode: IVnode, currentVnode: IVnode) {
+  const setBack = setCurrentRenderContext({ currentAnchor: preVnode.el?.nextSibling })
   unMountVnode(preVnode)
   mountVnode(currentVnode)
+  setBack()
 }
 
 export function unMountVnode(vnode: IVnode): void {
@@ -96,7 +102,7 @@ export function mountFragmentVnode(fragmentVnode: IFragmentVnode) {
 
   const { currentParentEl } = getCurrentRenderContext()
   for (const childVnode of fragmentVnode.children) {
-    setCurrentRenderContext({ currentAnchorEl: anchor, currentParentEl })
+    setCurrentRenderContext({ currentAnchor: anchor, currentParentEl })
     mountVnode(childVnode)
   }
 }
@@ -104,10 +110,10 @@ export function mountFragmentVnode(fragmentVnode: IFragmentVnode) {
 export function updateFragmentVnode(preVnode: IFragmentVnode, currentVnode: IFragmentVnode) {
   const currentParentEl = (currentVnode.el = preVnode.el)?.parentElement!
   const currentAnchorEl = (currentVnode.anchor = preVnode.anchor)
-  const resetRenderContext = setCurrentRenderContext({ currentAnchorEl, currentParentEl })
+  const setBack = setCurrentRenderContext({ currentAnchor: currentAnchorEl, currentParentEl })
 
   diffVnodeChildren(preVnode, currentVnode)
-  resetRenderContext()
+  setBack()
 }
 
 export function unMountFragmentVnode(fragmentVnode: IFragmentVnode) {
@@ -136,9 +142,9 @@ export function updateElementVnode(preVnode: IElementVnode, currentVnode: IEleme
   if (!el) return
 
   setVnodePropsToDomAttribute(preVnode, currentVnode, el)
-  const resetRenderContext = setCurrentRenderContext({ currentParentEl: el })
+  const setBack = setCurrentRenderContext({ currentParentEl: el })
   diffVnodeChildren(preVnode, currentVnode)
-  resetRenderContext()
+  setBack()
 }
 
 export function mountTextNodeVnode(textNodeVnode: ITextNodeVnode) {
@@ -150,9 +156,9 @@ export function updateTextNodeVnode(preVnode: IVnode, currentVnode: IVnode) {
   const el = (currentVnode.el = preVnode.el)
   const prevText = preVnode.children[0].toString()
   const currentText = currentVnode.children[0].toString()
-  if (currentText !== prevText) {
-    setTextContent(currentText, el || undefined)
-  }
+  if (!el || currentText === prevText) return
+
+  setTextContent(currentText, el)
 }
 
 export function mount(componentFunction: Function, parentDom: Element): void {

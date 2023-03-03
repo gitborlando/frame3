@@ -9,7 +9,7 @@ export function createTextNode(content: string) {
 }
 
 export function insertChild(el: Element | Text) {
-  currentParentEl?.insertBefore(el, currentAnchorEl)
+  currentParentEl?.insertBefore(el, currentAnchor)
 }
 
 export function setTextContent(textContent: any, el: Element | Text = currentParentEl) {
@@ -21,24 +21,24 @@ export function remove(el?: Element | Text | null) {
 }
 
 let currentParentEl: Element
-let currentAnchorEl: Text | null
+let currentAnchor: Node | null
 
 export function getCurrentRenderContext() {
-  return { currentParentEl, currentAnchorEl }
+  return { currentParentEl, currentAnchor }
 }
 
 export function setCurrentRenderContext({
   currentParentEl: parentEl,
-  currentAnchorEl: anchorEl,
+  currentAnchor: anchorEl,
 }: {
   currentParentEl?: Element
-  currentAnchorEl?: Text | null
+  currentAnchor?: Node | null
 }) {
-  const { currentParentEl: prevParentEl, currentAnchorEl: prevAnchorEl } = getCurrentRenderContext()
-  parentEl && (currentParentEl = parentEl)
-  currentAnchorEl = anchorEl || null
+  const { currentParentEl: prevParentEl, currentAnchor: prevAnchor } = getCurrentRenderContext()
+  currentAnchor = anchorEl || null
+  if (parentEl) currentParentEl = parentEl
   return function setBack() {
-    setCurrentRenderContext({ currentParentEl: prevParentEl, currentAnchorEl: prevAnchorEl })
+    setCurrentRenderContext({ currentParentEl: prevParentEl, currentAnchor: prevAnchor })
   }
 }
 
