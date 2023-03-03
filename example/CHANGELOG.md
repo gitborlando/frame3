@@ -1,5 +1,13 @@
 # @frame3/example
 
+## 1.1.3
+
+### Patch Changes
+
+- 修复父子组件 css 穿透问题
+- Updated dependencies
+  - frame3@1.1.2
+
 ## 1.1.2
 
 ### Patch Changes

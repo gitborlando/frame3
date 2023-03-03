@@ -50,6 +50,7 @@ export function mountComponentVnode(componentVnode: IComponentVnode) {
     componentVnode.el = currentSubVnode.el
     componentInstance.subVnode = currentSubVnode
     setCurrentComponentInstance(null)
+    specialDealDeepScopedCss(props, componentVnode)
   })
 
   componentInstance.passiveUpdate = (props: IVnodeProps, children: any[]) => {
@@ -60,6 +61,16 @@ export function mountComponentVnode(componentVnode: IComponentVnode) {
   }
 
   if (props.hasOwnProperty('ref')) props.ref.value = componentInstance
+}
+
+function specialDealDeepScopedCss(componentProps: IVnodeProps, componentVnode: IComponentVnode) {
+  if (
+    componentProps.hasOwnProperty('scope-id') &&
+    componentProps.hasOwnProperty('className') &&
+    componentVnode.el instanceof Element
+  ) {
+    componentVnode.el.setAttribute('scope-' + componentProps['scope-id'], '')
+  }
 }
 
 /**

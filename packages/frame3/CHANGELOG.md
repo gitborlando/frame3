@@ -1,5 +1,13 @@
 # frame3
 
+## 1.1.2
+
+### Patch Changes
+
+- 修复父子组件 css 穿透问题
+- Updated dependencies
+  - frame3-runtime-core@1.1.2
+
 ## 1.1.1
 
 ### Patch Changes

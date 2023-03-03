@@ -5,7 +5,7 @@ import './frame3.css'
 export const Frame3 = () => {
   cssVariables: $size
   return (
-    <div className="frame3">
+    <div class="frame3">
       <img class="image" src={shiyangyang}></img>
       <h1>Frame3</h1>
     </div>
