@@ -23,7 +23,7 @@ import {
 
 /**
  * @description 生成 vnode 的函数
- * @param jsxTag jsx的tag, 比如div, App等
+ * @param jsxTag jsx的tag, 比如div, App等, 可以是函数, 字符串, 空数组, 或 0
  * @param props 函数组件的props作为vnode的props
  * @param children jsx的子节点
  * @returns 返回vnode
@@ -36,17 +36,17 @@ export function h(jsxTag: IVnodeJsxTag, props: IVnodeProps = {}, children: any[]
   const vnodeBase = { props, children, el: null, key: props.key }
   const { textNode, component, fragment, element } = VnodeType
 
-  if (jsxTag === 0) return { type: textNode, jsxTag, ...vnodeBase }
-  if (is.function(jsxTag)) return { type: component, jsxTag, componentInstance: null, ...vnodeBase }
+  if (jsxTag === 0) return { type: textNode, ...vnodeBase }
+  else vnodeBase.children = specialDealVnodeChildren(vnodeBase.children)
 
-  vnodeBase.children = specialDealVnodeChildren(vnodeBase.children)
-  if (is.array(jsxTag)) return { type: fragment, jsxTag, anchor: null, ...vnodeBase }
-  return { type: element, jsxTag, ...vnodeBase }
+  if (is.string(jsxTag)) return { type: element, tagName: jsxTag, ...vnodeBase }
+  if (is.array(jsxTag)) return { type: fragment, anchor: null, ...vnodeBase }
+  return { type: component, componentFunction: jsxTag, componentInstance: null, ...vnodeBase }
 }
 
 /**
- * @description 将类型为字符串和数字的child包裹成`h(0('textNode'),{},[])`的形式
- * @param child vnode的children
+ * 包装子集, 将string | number | undefined | null | false类型全处理成文本vnode,
+ * 将数组类型的包装成 fragment vnode
  */
 export function specialDealVnodeChildren(children: any[]): IVnode[] {
   const newVnodeChildren: IVnode[] = []
@@ -60,10 +60,7 @@ export function specialDealVnodeChildren(children: any[]): IVnode[] {
 }
 
 /**
- * @description 从虚拟dom中创建真实dom节点并挂载到目标dom节点
- * @param vnode 虚拟dom对象
- * @param parentDom 真实dom节点
- * @returns
+ * 从虚拟dom中创建真实dom节点并挂载到目标dom节点
  */
 export function mountVnode(vnode: IVnode) {
   if (vnodeIs.component(vnode)) return mountComponentVnode(vnode)
@@ -72,6 +69,9 @@ export function mountVnode(vnode: IVnode) {
   if (vnodeIs.textNode(vnode)) return mountTextNodeVnode(vnode)
 }
 
+/**
+ * 如果前后vnode类型相同就进行比对更新, 不相同就替换
+ */
 export function updateVnode(preVnode: IVnode, currentVnode: IVnode) {
   if (vnodeIs.component(currentVnode) && vnodeIs.component(preVnode))
     return updateComponentVnode(preVnode, currentVnode)
@@ -81,6 +81,9 @@ export function updateVnode(preVnode: IVnode, currentVnode: IVnode) {
   return replaceVnode(preVnode, currentVnode)
 }
 
+/**
+ * 卸载前一个vnode, 挂载当前的vnode
+ */
 export function replaceVnode(preVnode: IVnode, currentVnode: IVnode) {
   const setBack = setCurrentRenderContext({ currentAnchor: preVnode.el?.nextSibling })
   unMountVnode(preVnode)
@@ -88,6 +91,9 @@ export function replaceVnode(preVnode: IVnode, currentVnode: IVnode) {
   setBack()
 }
 
+/**
+ * 如果是component或fragment就走特殊流程, element或textNode就直接移除
+ */
 export function unMountVnode(vnode: IVnode): void {
   if (vnodeIs.component(vnode)) return unMountComponentVnode(vnode)
   if (vnodeIs.fragment(vnode)) return unMountFragmentVnode(vnode)
@@ -102,8 +108,9 @@ export function mountFragmentVnode(fragmentVnode: IFragmentVnode) {
 
   const { currentParentEl } = getCurrentRenderContext()
   for (const childVnode of fragmentVnode.children) {
-    setCurrentRenderContext({ currentAnchor: anchor, currentParentEl })
+    const setBack = setCurrentRenderContext({ currentAnchor: anchor, currentParentEl })
     mountVnode(childVnode)
+    setBack()
   }
 }
 
@@ -118,6 +125,7 @@ export function updateFragmentVnode(preVnode: IFragmentVnode, currentVnode: IFra
 
 export function unMountFragmentVnode(fragmentVnode: IFragmentVnode) {
   let { el, anchor } = fragmentVnode
+  // 循环找出夹在el和anchor中间的节点删除掉
   while (el !== anchor) {
     let nextSibling = el?.nextSibling as any
     remove(el)
@@ -127,7 +135,7 @@ export function unMountFragmentVnode(fragmentVnode: IFragmentVnode) {
 }
 
 export function mountElementVnode(elementVnode: IElementVnode) {
-  const el = document.createElement(elementVnode.jsxTag)
+  const el = document.createElement(elementVnode.tagName)
   setVnodePropsToDomAttribute(null, elementVnode, el)
   insertChild((elementVnode.el = el))
 

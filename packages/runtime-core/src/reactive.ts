@@ -81,7 +81,6 @@ export function effect<P extends Record<string, any> & { scheduler?: Function }>
     () => {
       try {
         if (!effectCallback.active) return
-
         effectCallbackStack.push((currentEffectCallback = effectCallback))
         callback(props)
       } finally {

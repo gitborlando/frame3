@@ -1,10 +1,14 @@
 import { IElementVnode, IFragmentVnode, IVnode } from './types'
 import { mountVnode, unMountVnode, updateVnode } from './vnode'
 
+/**
+ * 比对前后两个vnode的子集, 分为带key的和不带key的
+ */
 export function diffVnodeChildren(
   prevVnode: IElementVnode | IFragmentVnode,
   currentVnode: IElementVnode | IFragmentVnode
 ) {
+  // 简单认为第一个子节点有key就都有key
   if (prevVnode.children[0]?.key && currentVnode.children[0]?.key) {
     diffKeyedChildren(prevVnode.children, currentVnode.children)
   } else {
@@ -12,6 +16,11 @@ export function diffVnodeChildren(
   }
 }
 
+/**
+ * 对比没有key的子集, 是最常见的情况
+ * 以最短的子集作为基准, 一个个去对比
+ * 最后多出来的, 新子集多了就挂载, 老子集多了就卸载
+ */
 function diffUnKeyedChildren(prevChildren: IVnode[], currentChildren: IVnode[]) {
   const prevChildrenLength = prevChildren.length
   const currentChildrenLength = currentChildren.length
