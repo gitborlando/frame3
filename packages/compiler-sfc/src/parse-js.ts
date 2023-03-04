@@ -2,6 +2,7 @@ import { NodePath, TraverseOptions } from '@babel/traverse'
 import * as t from '@babel/types'
 import { babelTraverseJSXOption } from './parse-jsx'
 import { babelTraverseLabelOption } from './parse-label'
+import { scopeId } from './parse-sfc'
 import {
   babelGenerate,
   babelParse,
@@ -63,6 +64,12 @@ function babelTraverseDotValueOption(): TraverseOptions<t.Node> {
         ]
         path.replaceWith(createFrameCall(callee!, args))
       }
+      if (t.isIdentifier(path.node.callee) && path.node.callee.name.match(/(^h$|^h_.{4}$)/)) {
+        const props = path.node.arguments[1]
+        if (!t.isObjectExpression(props)) return
+        const scopeIdProperty = t.objectProperty(t.stringLiteral('scope-id'), t.stringLiteral(scopeId))
+        props.properties.push(scopeIdProperty)
+      }
     },
     VariableDeclarator(path) {
       const { node } = path
@@ -86,17 +93,24 @@ function babelTraverseOthersOption(): TraverseOptions<t.Node> {
       path.remove()
     },
     ReturnStatement(path) {
-      const { argument } = path.node
+      let { argument } = path.node
+      if (t.isArrowFunctionExpression(argument)) {
+        argument = argument.body as t.Expression
+      }
       if (
         !t.isJSXElement(argument) &&
         !t.isJSXFragment(argument) &&
         !(t.isCallExpression(argument) && (argument.callee as t.Identifier).name === 'h')
       )
         return
-      path.replaceWith(t.returnStatement(t.arrowFunctionExpression([], argument)))
+
+      if (!t.isArrowFunctionExpression(path.node.argument)) {
+        path.replaceWith(t.returnStatement(t.arrowFunctionExpression([], argument)))
+      }
       parseState.returnStatementAnchor = path
       const cssInJs = babelTemplate.ast(parseJsHooks.map((parseCss) => parseCss()).join(''))
       path.insertBefore(cssInJs)
+      parseJsHooks.length = 0
     },
   }
 }

@@ -28,7 +28,8 @@ function transformJsxElement(node: t.JSXElement) {
   const { openingElement, children } = node
   const { name, attributes } = openingElement
   const propTuples: [string, any][] = attributes.map((attribute) => {
-    const { name, value } = attribute as t.JSXAttribute
+    if (t.isJSXSpreadAttribute(attribute)) return ['$_spread', attribute.argument]
+    const { name, value } = attribute
     const propKey = (name as unknown as t.Identifier).name
     const propValue = t.isJSXExpressionContainer(value)
       ? promoteArrowFunctionInJsx(value.expression)
@@ -65,7 +66,12 @@ function transformJsxChildren(
 function createHydrateCall(tag: string, propTuples: [string, any][], children: t.Expression[]) {
   return createFrameCall(FrameApi.h, [
     tag ? (tag[0].toUpperCase() === tag[0] ? t.identifier(tag) : t.stringLiteral(tag)) : t.arrayExpression([]),
-    t.objectExpression(propTuples.map(([propKey, propValue]) => t.objectProperty(t.stringLiteral(propKey), propValue))),
+    t.objectExpression(
+      propTuples.map(([propKey, propValue]) => {
+        if (propKey === '$_spread') return t.spreadElement(propValue)
+        return t.objectProperty(t.stringLiteral(propKey), propValue)
+      })
+    ),
     t.arrayExpression(children),
   ])
 }

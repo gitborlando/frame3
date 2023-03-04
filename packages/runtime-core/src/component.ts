@@ -65,9 +65,9 @@ export function mountComponentVnode(componentVnode: IComponentVnode) {
 
 function specialDealDeepScopedCss(componentProps: IVnodeProps, componentVnode: IComponentVnode) {
   if (
+    componentVnode.el instanceof Element &&
     componentProps.hasOwnProperty('scope-id') &&
-    componentProps.hasOwnProperty('className') &&
-    componentVnode.el instanceof Element
+    (componentProps.hasOwnProperty('className') || componentProps.hasOwnProperty('class'))
   ) {
     componentVnode.el.setAttribute('scope-' + componentProps['scope-id'], '')
   }

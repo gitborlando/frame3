@@ -1,12 +1,14 @@
 // JSX type definitions for Surplus initially based on those for React v0.14 but heavily modified since
 // React definitions by: Asana <https://asana.com>, AssureSign <http://www.assuresign.com>, Microsoft <https://microsoft.com>, John Reilly <https://github.com/johnnyreilly/>
 
+import { IVnode } from 'frame3-runtime-core/src/types'
+
 // best documentation I've found for TSX typing behavior is here: https://github.com/Microsoft/TypeScript/issues/5478
 
 export namespace JSX {
   // TSX won't currently let us define a specialized type for each intrinsic element,
   // since React just has an opaque type, so we have to use just base type here.
-  type Element = () => any
+  type Element = (() => IVnode) | IVnode
   // Defining ElementChildrenAttribute lets us type the children passed to an embedded subcomponent
   interface ElementChildrenAttribute {
     children: {}

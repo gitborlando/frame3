@@ -1,5 +1,11 @@
 # @frame3/compiler-sfc
 
+## 1.1.1
+
+### Patch Changes
+
+- 修复了一些使用体验的问题
+
 ## 1.1.0
 
 ### Minor Changes
