@@ -8,8 +8,8 @@
 - frame 取自 "framework" 的 "frame", 是我两年前写的 [frame.js](https://github.com/gitborlando/Frame) 的第三代
 - frame3 只是长得像 react, 其内核还是 vue3 那套, 换句话说就是 react 的外表, vue 的内心
 - 尽管原理上与 vue3 如出一辙, 但由于一些微不足道的改动, 使得实际开发还是与 vue3 有一点点不同(更好)
-- 尽管 frame3 是一个可正常使用(非玩具, 完美支持 ts)的框架, 但其更大的作用还是作为 vue3 的 mini 版本供开发者研究其原理
-- frame3 源码类型友好(几乎不用`any`), 每个函数都有 tsdoc, 重要部分有详细注释, 方便食用
+- 尽管 frame3 是一个可正常使用(非玩具, 支持 ts)的框架, 但其更大的作用还是作为 vue3 的 mini 版本供开发者研究其原理
+- frame3 源码类型友好(几乎不用`any`), 每个函数都有 tsdoc, 部分有详细注释, 方便食用
 
 ### 体验
 
@@ -45,9 +45,7 @@ counter.tsx
 ```ts
 import { $size, $outOfBound, setSize } from './size'
 
-interface IProps {}
-
-export const Counter = ({}: IProps) => {
+export const Counter = () => {
   return (
     <div>
       <div>{!$outOfBound ? $size : 'out of bound'}</div>
@@ -140,6 +138,25 @@ effect(() => {
 ### 文档
 
 我用 frame3 写了 frame3 的文档和我自己的博客
+
+### 指南
+
+源码阅读指南 :
+
+- 阅读顺序: vnode.ts -> render-dom.ts -> component.ts -> reactive.ts -> scheduler.ts
+- 整个源码几乎没有行内注释, 而是由函数及类型声明上的 tsdoc 来替代
+- 阅读时可以将鼠标移到变量名上, 会很详细的解释这个变量或者函数有什么作用
+- 注: frame3 有些地方具体实现和 vue3 及各种 mini 版不同, 而变量命名则完全不同, 以及由于使用的是 jsx, 所以并没有模板编译部分, 不过这对理解 vue3 原理及其运行流程并无影响, 甚至可能更有帮助
+
+框架使用指南 :
+
+- 首先`yarn create vite`创建一个空的原生 ts 的项目 (没用过 vite 的先去学下 vite)
+- 然后再`yarn add frame3 vite-plugin-frame3`
+- 在 vite.config.ts 的 plugin 里添加`frame3()` (啥名都行, 反正是默认导出)
+- 在 tsconfig.json 里添加`"jsx": "preserve"`和`"jsxImportSource": "frame3"` (这两个是对 tsx 进行编译和智能提示的)
+- api 的使用去看文档就行 (其实不用看文档都行, 看两个示例就懂了)
+
+如果有任何问题欢迎提 issue
 
 ### 初衷
 

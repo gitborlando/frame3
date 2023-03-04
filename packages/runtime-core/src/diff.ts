@@ -36,6 +36,9 @@ function diffUnKeyedChildren(prevChildren: IVnode[], currentChildren: IVnode[]) 
   }
 }
 
+/**
+ * 有key的对比, 还没搞完
+ */
 function diffKeyedChildren(prevChildren: IVnode[], currentChildren: IVnode[]) {
   let headIndex = 0
   let prevChildrenTailIndex = prevChildren.length - 1

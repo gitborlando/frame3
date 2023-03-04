@@ -1,5 +1,11 @@
 # @frame3/compiler-sfc
 
+## 1.1.2
+
+### Patch Changes
+
+- 添加并完善 tsdoc
+
 ## 1.1.1
 
 ### Patch Changes

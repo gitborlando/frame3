@@ -63,6 +63,9 @@ export function mountComponentVnode(componentVnode: IComponentVnode) {
   if (props.hasOwnProperty('ref')) props.ref.value = componentInstance
 }
 
+/**
+ * 如果组件有className的话会把组件的scopeId继承给子组件的el上
+ */
 function specialDealDeepScopedCss(componentProps: IVnodeProps, componentVnode: IComponentVnode) {
   if (
     componentVnode.el instanceof Element &&

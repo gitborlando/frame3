@@ -23,23 +23,23 @@ export function implementLifeCycles(componentInstance: IComponentInstance) {
   return (type: ILifeCycleTypes) => componentInstance.lifeCycles[type].forEach((callback) => callback())
 }
 
-export function onBeforeMount(callbacks: Function) {
-  injectLifeCycle('beforeMount', callbacks)
+export function onBeforeMount(callback: Function) {
+  injectLifeCycle('beforeMount', callback)
 }
-export function onMounted(callbacks: Function) {
-  injectLifeCycle('mounted', callbacks)
+export function onMounted(callback: Function) {
+  injectLifeCycle('mounted', callback)
 }
-export function onBeforeUpdate(callbacks: Function) {
-  injectLifeCycle('beforeUpdate', callbacks)
+export function onBeforeUpdate(callback: Function) {
+  injectLifeCycle('beforeUpdate', callback)
 }
-export function onUpdated(callbacks: Function) {
-  injectLifeCycle('updated', callbacks)
+export function onUpdated(callback: Function) {
+  injectLifeCycle('updated', callback)
 }
-export function onBeforeUnMount(callbacks: Function) {
-  injectLifeCycle('beforeUnMount', callbacks)
+export function onBeforeUnMount(callback: Function) {
+  injectLifeCycle('beforeUnMount', callback)
 }
-export function onUnMounted(callbacks: Function) {
-  injectLifeCycle('unMounted', callbacks)
+export function onUnMounted(callback: Function) {
+  injectLifeCycle('unMounted', callback)
 }
 
 /**

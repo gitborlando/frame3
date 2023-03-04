@@ -1,5 +1,11 @@
 # @frame3/runtime-core
 
+## 1.1.4
+
+### Patch Changes
+
+- 添加并完善 tsdoc
+
 ## 1.1.3
 
 ### Patch Changes

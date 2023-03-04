@@ -1,5 +1,14 @@
 # frame3
 
+## 1.1.4
+
+### Patch Changes
+
+- 添加并完善 tsdoc
+- Updated dependencies
+  - frame3-compiler-sfc@1.1.2
+  - frame3-runtime-core@1.1.4
+
 ## 1.1.3
 
 ### Patch Changes

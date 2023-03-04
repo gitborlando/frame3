@@ -44,8 +44,7 @@ export const parseCss = (css: string) => {
             if (prevState.style) return prevState.style.innerHTML = \`${style}\`; 
             const style = document.createElement('style');
             style.innerHTML = \`${style}\`;
-            const head = document.head || document.documentElement;
-            head.appendChild((prevState.style = style));
+            document.head.appendChild((prevState.style = style));
           }, { style: '' });`)
 
           declaration.value.children.clear()
@@ -53,8 +52,8 @@ export const parseCss = (css: string) => {
       })
     },
   })
-  additionalJsForAddCss.push(
-    `(document.head || document.documentElement).insertAdjacentHTML('beforeend', '<style>${cssGenerate(ast)}</style>');`
-  )
+  additionalJsForAddCss.push(`if (!document.querySelector('style[scope-${scopeId}]')) {
+  document.head.insertAdjacentHTML('beforeend', '<style scope-${scopeId}>${cssGenerate(ast)}</style>')
+}`)
   return additionalJsForAddCss.join('')
 }
