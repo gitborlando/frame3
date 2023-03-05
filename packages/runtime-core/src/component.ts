@@ -23,13 +23,13 @@ import { mountVnode, specialDealVnodeChildren, unMountVnode, updateVnode } from 
 export function mountComponentVnode(componentVnode: IComponentVnode) {
   const { componentFunction, props, children } = componentVnode
   const componentInstance = (componentVnode.componentInstance = {
+    props,
     isMounted: false,
-    props: { ...props, children },
     lifeCycles: initLifeCycles(),
   } as IComponentInstance)
 
   setCurrentComponentInstance(componentInstance)
-  let renderVnodeFunction = componentFunction(componentInstance.props)
+  let renderVnodeFunction = componentFunction({ ...props, children })
 
   componentInstance.update = effect(() => {
     const currentSubVnode = renderVnodeFunction()
@@ -54,9 +54,9 @@ export function mountComponentVnode(componentVnode: IComponentVnode) {
   })
 
   componentInstance.passiveUpdate = (props: IVnodeProps, children: any[]) => {
-    componentInstance.props = { ...props, children }
+    componentInstance.props = props
     setCurrentComponentInstance(componentInstance)
-    renderVnodeFunction = componentFunction(componentInstance.props)
+    renderVnodeFunction = componentFunction({ ...props, children })
     componentInstance.update()
   }
 
@@ -80,8 +80,9 @@ function specialDealDeepScopedCss(componentProps: IVnodeProps, componentVnode: I
  * 由父组件触发的组件更新
  */
 export function updateComponentVnode(preVnode: IComponentVnode, currentVnode: IComponentVnode) {
+  currentVnode.el = preVnode.el!
   currentVnode.componentInstance = preVnode.componentInstance!
-  if (propsIsEqual(preVnode.props, currentVnode.props)) return
+  if (propsAndChildrenAllEqual(preVnode, currentVnode)) return
   currentVnode.componentInstance.passiveUpdate(currentVnode.props, currentVnode.children)
 }
 
@@ -99,8 +100,13 @@ export function unMountComponentVnode({ componentInstance }: IComponentVnode) {
 }
 
 /**
- * 浅对比前后两个vnode的props, 有不同的才会更新
+ * 浅对比前后两个vnode的props和children, 有不同的才会更新
  */
-function propsIsEqual(prevProps: IVnodeProps, currentProps: IVnodeProps) {
-  return Object.keys(currentProps).every((key) => prevProps[key] === currentProps[key])
+function propsAndChildrenAllEqual(preVnode: IComponentVnode, currentVnode: IComponentVnode) {
+  const { props: prevProps, children: prevChildren } = preVnode
+  const { props: currentProps, children: currentChildren } = currentVnode
+  return (
+    Object.keys(currentProps).every((key) => prevProps[key] === currentProps[key]) &&
+    Object.keys(currentChildren).every((key) => prevChildren[+key] === currentChildren[+key])
+  )
 }

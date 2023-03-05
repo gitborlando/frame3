@@ -41,11 +41,12 @@ export const parseCss = (css: string) => {
 
           additionalJsForAddCss.push(`
           ${FrameApi.effect}((prevState) => {
+            const { t } = prevState
             if (prevState.style) return prevState.style.innerHTML = \`${style}\`; 
             const style = document.createElement('style');
             style.innerHTML = \`${style}\`;
             document.head.appendChild((prevState.style = style));
-          }, { style: '' });`)
+          }, { style: null, t: ${FrameApi.theme} });`)
 
           declaration.value.children.clear()
         },

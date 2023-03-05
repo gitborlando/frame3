@@ -1,5 +1,14 @@
 # @frame3/example
 
+## 1.1.8
+
+### Patch Changes
+
+- 添加配置 css 主题 api 以及修复嵌套组件渲染异常
+- Updated dependencies
+  - vite-plugin-frame3@1.1.6
+  - frame3@1.1.7
+
 ## 1.1.7
 
 ### Patch Changes

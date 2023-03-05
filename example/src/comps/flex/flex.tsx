@@ -3,12 +3,12 @@ import { JSX } from 'frame3/jsx-runtime'
 import './flex.css'
 
 type IFlex = JSX.HTMLAttributes<any> & {
-  layout: 'h' | 'v' | 'c'
+  layout?: 'h' | 'v' | 'c'
   as?: keyof JSX.IntrinsicElements
   children?: any
 }
 
-export const Flex = ({ as = 'div', layout, children, className, ...rest }: IFlex) => {
+export const Flex = ({ as = 'div', layout = 'c', children, className, ...rest }: IFlex) => {
   return h(
     as,
     {

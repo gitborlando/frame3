@@ -1,5 +1,14 @@
 # frame3
 
+## 1.1.7
+
+### Patch Changes
+
+- 添加配置 css 主题 api 以及修复嵌套组件渲染异常
+- Updated dependencies
+  - frame3-compiler-sfc@1.1.5
+  - frame3-runtime-core@1.1.6
+
 ## 1.1.6
 
 ### Patch Changes

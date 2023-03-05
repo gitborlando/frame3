@@ -49,6 +49,7 @@ export const FrameApi = new Proxy(
     ref: 'ref' + id,
     h: 'h' + id,
     mount: 'mount' + id,
+    theme: 'theme' + id,
   },
   {
     get(target, api) {

@@ -20,7 +20,7 @@ export type IVnodeJsxTag = IComponentFunction | [] | string | 0
 
 /** 四个vnode类型 */
 export type IVnodeType = (typeof VnodeType)[keyof typeof VnodeType]
-export type IVnodeProps = Record<string, any> & { children?: any[] }
+export type IVnodeProps = Record<string, any>
 
 /**
  * 组件函数执行会返回一个渲染函数, 即这个`() => IVnode`.

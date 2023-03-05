@@ -1,5 +1,11 @@
 # @frame3/compiler-sfc
 
+## 1.1.5
+
+### Patch Changes
+
+- 添加配置 css 主题 api 以及修复嵌套组件渲染异常
+
 ## 1.1.4
 
 ### Patch Changes
