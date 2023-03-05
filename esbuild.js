@@ -10,7 +10,12 @@ const plugin = {
   name: 'buildOnEnd',
   setup(build) {
     build.onEnd(() => {
-      ;['runtime-core/index.js', 'compiler-sfc/index.js'].forEach((i) => {
+      ;[
+        'runtime-core/index.js',
+        'runtime-core/index.js.map',
+        'compiler-sfc/index.js',
+        'compiler-sfc/index.js.map',
+      ].forEach((i) => {
         if (existsSync(`./packages/${i}`)) {
           writeFileSync(`./packages/frame3/${i}`, readFileSync(`./packages/${i}`, 'utf-8'))
         }
@@ -27,6 +32,7 @@ esbuild
     outdir: './packages',
     minify: true,
     plugins: [plugin],
+    sourcemap: true,
   })
   .then((ctx) => {
     ctx.watch()

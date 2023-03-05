@@ -42,17 +42,33 @@ export function addDotValue(js: string) {
 function babelTraverseDotValueOption(): TraverseOptions<t.Node> {
   return {
     Identifier(path) {
+      if (!path.node.name.startsWith('$')) return
+      if (path.node.name === '$') return
+      if (path.node.name.match(/.value$/)) return
+      if (path.node.name.match(/\$(reactive|computed|ref)/)) return
+      if (t.isImportSpecifier(path.parent)) return
+      if (t.isExportSpecifier(path.parent)) return
+      if (t.isVariableDeclarator(path.parent)) return
+      if (t.isTSPropertySignature(path.parent) && path.parent.key === path.node) return
+      if (t.isObjectProperty(path.parent) && t.isIdentifier(path.parent.key) && path.parent.key.name === path.node.name)
+        return
       if (
-        !path.node.name.startsWith('$') ||
-        path.node.name === '$' ||
-        path.node.name.match(/.value$/) ||
-        path.node.name.match(/\$(reactive|computed|ref)/) ||
-        t.isObjectProperty(path.parent) ||
-        t.isImportSpecifier(path.parent) ||
-        t.isVariableDeclarator(path.parent) ||
-        t.isJSXExpressionContainer(path.parent)
+        t.isCallExpression(path.parent) &&
+        t.isIdentifier(path.parent.callee) &&
+        path.parent.callee.name.match(/(novalue|nv)/)
       )
         return
+      if (
+        t.isObjectProperty(path.parent) &&
+        t.isIdentifier(path.parent.value) &&
+        path.parent.value.name === path.node.name &&
+        t.isIdentifier(path.parent.key) &&
+        path.parent.key.name.match(/^\$/)
+      )
+        return
+
+      // if (path.node.name === '$abc' && t.isObjectPattern(path.parentPath.parent) && t.isObjectProperty(path.parent))
+      //   console.log(path.parent.key, path.parent.value)
       path.replaceWith(t.identifier(`${path.node.name}.value`))
       path.skip()
     },

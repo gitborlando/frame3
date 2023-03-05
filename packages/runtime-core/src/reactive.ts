@@ -161,3 +161,7 @@ export function $ref<HTMLTagName extends keyof HTMLElementTagNameMap>(tagName: I
     ? $reactive<IComponentInstance>()
     : $reactive<HTMLElementTagNameMap[HTMLTagName]>()
 }
+
+export function nv<T>(value: T) {
+  return value
+}

@@ -1,5 +1,14 @@
 # frame3
 
+## 1.1.5
+
+### Patch Changes
+
+- 修复对添加.value 的判定
+- Updated dependencies
+  - frame3-compiler-sfc@1.1.3
+  - frame3-runtime-core@1.1.5
+
 ## 1.1.4
 
 ### Patch Changes

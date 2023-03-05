@@ -1,5 +1,13 @@
 # vite-plugin-frame3
 
+## 1.1.4
+
+### Patch Changes
+
+- 修复对添加.value 的判定
+- Updated dependencies
+  - frame3-compiler-sfc@1.1.3
+
 ## 1.1.3
 
 ### Patch Changes

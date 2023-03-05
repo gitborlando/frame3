@@ -1,5 +1,11 @@
 # @frame3/runtime-core
 
+## 1.1.5
+
+### Patch Changes
+
+- 修复对添加.value 的判定
+
 ## 1.1.4
 
 ### Patch Changes

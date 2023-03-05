@@ -1,5 +1,11 @@
 # @frame3/compiler-sfc
 
+## 1.1.3
+
+### Patch Changes
+
+- 修复对添加.value 的判定
+
 ## 1.1.2
 
 ### Patch Changes
