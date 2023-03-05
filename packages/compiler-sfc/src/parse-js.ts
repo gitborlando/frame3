@@ -62,8 +62,8 @@ function babelTraverseDotValueOption(): TraverseOptions<t.Node> {
         t.isObjectProperty(path.parent) &&
         t.isIdentifier(path.parent.value) &&
         path.parent.value.name === path.node.name &&
-        t.isIdentifier(path.parent.key) &&
-        path.parent.key.name.match(/^\$/)
+        t.isStringLiteral(path.parent.key) &&
+        path.parent.key.value.match(/(^\$|^ref$)/)
       )
         return
 

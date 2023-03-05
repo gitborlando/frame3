@@ -1,5 +1,11 @@
 # @frame3/compiler-sfc
 
+## 1.1.4
+
+### Patch Changes
+
+- 增加跳过 css 解析的选项以及当$xx 是 jsx 的 ref 里的值时不加.value
+
 ## 1.1.3
 
 ### Patch Changes

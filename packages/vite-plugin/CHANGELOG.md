@@ -1,5 +1,13 @@
 # vite-plugin-frame3
 
+## 1.1.5
+
+### Patch Changes
+
+- 增加跳过 css 解析的选项以及当$xx 是 jsx 的 ref 里的值时不加.value
+- Updated dependencies
+  - frame3-compiler-sfc@1.1.4
+
 ## 1.1.4
 
 ### Patch Changes

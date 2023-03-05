@@ -8,6 +8,8 @@ const fileIds: string[] = []
 let currentTsxFileId = ''
 const cssToTsxImportMap: Record<string, string> = {}
 
+const skipCssIds: string[] = []
+
 export default function frame3(): Plugin {
   fileIds.length = 0
 
@@ -36,12 +38,12 @@ export default function frame3(): Plugin {
           code.replace(/(.*)<style>(.*)<\/style>/, '$2'),
         ])
       }
-      if (id.match(/css$/)) return ' '
+      if (id.match(/css$/) && !skipCssIds.includes(id)) return ' '
 
       return code
     },
     handleHotUpdate({ file, server, modules }) {
-      const toUpdateIds = []
+      const toUpdateIds: string[] = []
       if (file.match(/css$/)) {
         toUpdateIds.push(cssToTsxImportMap[file])
       }
@@ -64,7 +66,12 @@ function readCssFile(code: string, upperDir: string) {
     .map((id) => {
       const path = transPath(resolve(upperDir, id))
       cssToTsxImportMap[path] = currentTsxFileId
-      return readFileSync(path)
+      const content = readFileSync(path, 'utf-8')
+      if (content.match(/^\s*\/\*\s*skip\s*\*\//)) {
+        skipCssIds.push(path)
+        return ''
+      }
+      return content
     })
     .join('\n')
 }
