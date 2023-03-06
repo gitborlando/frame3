@@ -98,6 +98,7 @@ export function setVnodePropsToDomAttribute(preVnode: IElementVnode | null, curr
     } else if (propkey === 'ref') {
       propValue.value = el
     } else if (propkey === 'classes') {
+      el.className = ''
       const classes = Array.isArray(propValue) ? propValue : [propValue]
       classes.filter(Boolean).forEach((_class) => el.classList.add(_class))
     } else if (propkey === 'scope-id') {

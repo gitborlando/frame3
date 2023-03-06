@@ -8,6 +8,7 @@ const fileIds: string[] = []
 let currentTsxFileId = ''
 const cssToTsxImportMap: Record<string, string> = {}
 
+const importCssIds: string[] = []
 const skipCssIds: string[] = []
 
 export default function frame3(): Plugin {
@@ -30,15 +31,16 @@ export default function frame3(): Plugin {
         const css = readCssFile(code, id.split('/').slice(0, -1).join('/'))
         return parseSFC([code, css])
       }
-      if (id.match(/html$/) && !id.match(/index.html$/)) {
-        fileIds.push(id)
-        parseSFC.config({ isSFC: true, importApiFrom: 'frame3' })
-        return parseSFC([
-          code.replace(/(.*)<script>(.*)<\/script>/, '$2'),
-          code.replace(/(.*)<style>(.*)<\/style>/, '$2'),
-        ])
-      }
-      if (id.match(/css$/) && !skipCssIds.includes(id)) return ' '
+      // if (id.match(/html$/) && !id.match(/index.html$/)) {
+      //   fileIds.push(id)
+      //   parseSFC.config({ isSFC: true, importApiFrom: 'frame3' })
+      //   return parseSFC([
+      //     code.replace(/(.*)<script>(.*)<\/script>/, '$2'),
+      //     code.replace(/(.*)<style>(.*)<\/style>/, '$2'),
+      //   ])
+      // }
+
+      if (id.match(/css$/) && importCssIds.includes(id)) return ' '
 
       return code
     },
@@ -66,8 +68,10 @@ function readCssFile(code: string, upperDir: string) {
     .map((id) => {
       const path = transPath(resolve(upperDir, id))
       cssToTsxImportMap[path] = currentTsxFileId
+      importCssIds.push(path)
       const content = readFileSync(path, 'utf-8')
       if (content.match(/^\s*\/\*\s*skip\s*\*\//)) {
+        importCssIds.pop()
         skipCssIds.push(path)
         return ''
       }

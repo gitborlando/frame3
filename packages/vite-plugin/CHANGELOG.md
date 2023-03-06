@@ -1,5 +1,11 @@
 # vite-plugin-frame3
 
+## 1.1.7
+
+### Patch Changes
+
+- 修复类名重复添加
+
 ## 1.1.6
 
 ### Patch Changes

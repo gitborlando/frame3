@@ -1,5 +1,13 @@
 # frame3
 
+## 1.1.9
+
+### Patch Changes
+
+- 修复类名重复添加
+- Updated dependencies
+  - frame3-runtime-core@1.1.8
+
 ## 1.1.8
 
 ### Patch Changes

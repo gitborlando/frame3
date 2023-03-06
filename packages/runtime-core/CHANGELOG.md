@@ -1,5 +1,11 @@
 # @frame3/runtime-core
 
+## 1.1.8
+
+### Patch Changes
+
+- 修复类名重复添加
+
 ## 1.1.7
 
 ### Patch Changes
