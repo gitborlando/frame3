@@ -137,7 +137,11 @@ effect(() => {
 
 ### 文档
 
-我用 frame3 写了 frame3 的文档和我自己的博客
+[文档](https://gitborlando.github.io/blog/#frame3doc)
+
+### 用户
+
+现在还只有我自己(frame3 的文档和我自己的博客是用 frame3 写的)
 
 ### 指南
 
