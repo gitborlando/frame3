@@ -1,5 +1,11 @@
 # @frame3/runtime-core
 
+## 1.1.7
+
+### Patch Changes
+
+- 添加 classes 语法糖
+
 ## 1.1.6
 
 ### Patch Changes

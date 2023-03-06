@@ -93,7 +93,7 @@ export type IComponentInstance = {
   isMounted: boolean
   /** 子级 vnode */
   subVnode: IVnode
-  /** 组件函数的arguments(一个对象), 包含组件的children */
+  /** 组件函数的arguments(一个对象) */
   props: IVnodeProps
   lifeCycles: Record<ILifeCycleTypes, Set<Function>>
   /** 组件更新, 如果vnode没挂载就挂载, 挂载了就更新 */

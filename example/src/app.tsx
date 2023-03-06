@@ -4,7 +4,7 @@ import { Frame3 } from './comps/frame3/frame3'
 
 export const App = () => {
   return (
-    <div class="app">
+    <div classes={'app'}>
       <Frame3 />
       <Counter />
     </div>

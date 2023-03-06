@@ -5,8 +5,8 @@ import './frame3.css'
 export const Frame3 = () => {
   cssVariables: $size
   return (
-    <div class="frame3">
-      <img class="image" src={shiyangyang}></img>
+    <div classes={'frame3'}>
+      <img classes={'image'} src={shiyangyang}></img>
       <h1>Frame3</h1>
     </div>
   )

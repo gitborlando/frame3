@@ -1,5 +1,13 @@
 # @frame3/example
 
+## 1.1.9
+
+### Patch Changes
+
+- 添加 classes 语法糖
+- Updated dependencies
+  - frame3@1.1.8
+
 ## 1.1.8
 
 ### Patch Changes

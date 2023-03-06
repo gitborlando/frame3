@@ -97,8 +97,9 @@ export function setVnodePropsToDomAttribute(preVnode: IElementVnode | null, curr
       el.setAttribute('style', styleString)
     } else if (propkey === 'ref') {
       propValue.value = el
-    } else if (propkey.match(/className|class/)) {
-      el.className = propValue
+    } else if (propkey === 'classes') {
+      const classes = Array.isArray(propValue) ? propValue : [propValue]
+      classes.filter(Boolean).forEach((_class) => el.classList.add(_class))
     } else if (propkey === 'scope-id') {
       el.setAttribute(`scope-${propValue}`, '')
     } else {

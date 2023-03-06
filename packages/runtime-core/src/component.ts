@@ -70,7 +70,7 @@ function specialDealDeepScopedCss(componentProps: IVnodeProps, componentVnode: I
   if (
     componentVnode.el instanceof Element &&
     componentProps.hasOwnProperty('scope-id') &&
-    (componentProps.hasOwnProperty('className') || componentProps.hasOwnProperty('class'))
+    componentProps.hasOwnProperty('classes')
   ) {
     componentVnode.el.setAttribute('scope-' + componentProps['scope-id'], '')
   }

@@ -1,5 +1,13 @@
 # frame3
 
+## 1.1.8
+
+### Patch Changes
+
+- 添加 classes 语法糖
+- Updated dependencies
+  - frame3-runtime-core@1.1.7
+
 ## 1.1.7
 
 ### Patch Changes

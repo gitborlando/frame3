@@ -435,9 +435,11 @@ export namespace JSX {
     charSet?: string
     challenge?: string
     checked?: boolean
-    classID?: string
-    className?: string
-    class?: string
+    // classID?: string
+    // className?: string
+    // class?: string
+    // classList?: any[]
+    classes?: string | any[]
     cols?: number
     colSpan?: number
     content?: string
