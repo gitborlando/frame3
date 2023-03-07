@@ -1,5 +1,13 @@
 # @frame3/example
 
+## 1.1.12
+
+### Patch Changes
+
+- Updated dependencies
+  - frame3@1.1.11
+  - vite-plugin-frame3@1.1.9
+
 ## 1.1.11
 
 ### Patch Changes

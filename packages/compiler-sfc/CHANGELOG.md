@@ -1,5 +1,11 @@
 # @frame3/compiler-sfc
 
+## 1.1.7
+
+### Patch Changes
+
+- 修复重复加 scope-id
+
 ## 1.1.6
 
 ### Patch Changes

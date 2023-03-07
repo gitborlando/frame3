@@ -1,5 +1,13 @@
 # frame3
 
+## 1.1.11
+
+### Patch Changes
+
+- 修复重复加 scope-id
+- Updated dependencies
+  - frame3-compiler-sfc@1.1.7
+
 ## 1.1.10
 
 ### Patch Changes

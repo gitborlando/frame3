@@ -1,5 +1,12 @@
 # vite-plugin-frame3
 
+## 1.1.9
+
+### Patch Changes
+
+- Updated dependencies
+  - frame3-compiler-sfc@1.1.7
+
 ## 1.1.8
 
 ### Patch Changes

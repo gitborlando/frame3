@@ -79,7 +79,7 @@ function babelTraverseDotValueOption(): TraverseOptions<t.Node> {
         ]
         path.replaceWith(createFrameCall(callee!, args))
       }
-      if (t.isIdentifier(path.node.callee) && path.node.callee.name.match(/(^h$|^h__.{4}$)/)) {
+      if (t.isIdentifier(path.node.callee) && path.node.callee.name.match(/(^h$)/)) {
         const props = path.node.arguments[1]
         if (!t.isObjectExpression(props)) return
         const scopeIdProperty = t.objectProperty(t.stringLiteral('scope-id'), t.stringLiteral(scopeId))
