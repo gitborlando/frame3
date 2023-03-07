@@ -1,5 +1,11 @@
 # @frame3/runtime-core
 
+## 1.1.9
+
+### Patch Changes
+
+- return 不加.value && 新增 v()手动加.value
+
 ## 1.1.8
 
 ### Patch Changes

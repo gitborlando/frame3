@@ -1,5 +1,5 @@
 export { onBeforeMount, onBeforeUnMount, onBeforeUpdate, onMounted, onUnMounted, onUpdated } from './life-cycles'
-export { $computed, $reactive, $ref, computed, effect, manualTrack, nv, reactive, ref } from './reactive'
+export { $computed, $reactive, $ref, computed, effect, manualTrack, nv, reactive, ref, v } from './reactive'
 export { Router } from './router'
 export { defineTheme, theme } from './theme'
 export { h, mount } from './vnode'

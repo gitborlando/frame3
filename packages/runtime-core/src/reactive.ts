@@ -162,6 +162,10 @@ export function $ref<HTMLTagName extends keyof HTMLElementTagNameMap>(tagName: I
     : $reactive<HTMLElementTagNameMap[HTMLTagName]>()
 }
 
+export function v<T>(reactiver: T) {
+  return (reactiver as unknown as any).value as T
+}
+
 export function nv<T>(value: T) {
   return value
 }

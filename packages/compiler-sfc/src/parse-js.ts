@@ -48,6 +48,7 @@ function babelTraverseDotValueOption(): TraverseOptions<t.Node> {
       if (path.node.name.match(/\$(reactive|computed|ref)/)) return
       if (t.isImportSpecifier(path.parent)) return
       if (t.isExportSpecifier(path.parent)) return
+      if (t.isReturnStatement(path.parent)) return
       if (t.isVariableDeclarator(path.parent)) return
       if (t.isTSPropertySignature(path.parent) && path.parent.key === path.node) return
       if (t.isObjectProperty(path.parent) && t.isIdentifier(path.parent.key) && path.parent.key.name === path.node.name)
@@ -55,7 +56,7 @@ function babelTraverseDotValueOption(): TraverseOptions<t.Node> {
       if (
         t.isCallExpression(path.parent) &&
         t.isIdentifier(path.parent.callee) &&
-        path.parent.callee.name.match(/(novalue|nv)/)
+        path.parent.callee.name.match(/^(nv|v)$/)
       )
         return
       if (
@@ -67,8 +68,6 @@ function babelTraverseDotValueOption(): TraverseOptions<t.Node> {
       )
         return
 
-      // if (path.node.name === '$abc' && t.isObjectPattern(path.parentPath.parent) && t.isObjectProperty(path.parent))
-      //   console.log(path.parent.key, path.parent.value)
       path.replaceWith(t.identifier(`${path.node.name}.value`))
       path.skip()
     },
@@ -80,23 +79,11 @@ function babelTraverseDotValueOption(): TraverseOptions<t.Node> {
         ]
         path.replaceWith(createFrameCall(callee!, args))
       }
-      if (t.isIdentifier(path.node.callee) && path.node.callee.name.match(/(^h$|^h_.{4}$)/)) {
+      if (t.isIdentifier(path.node.callee) && path.node.callee.name.match(/(^h$|^h__.{4}$)/)) {
         const props = path.node.arguments[1]
         if (!t.isObjectExpression(props)) return
         const scopeIdProperty = t.objectProperty(t.stringLiteral('scope-id'), t.stringLiteral(scopeId))
         props.properties.push(scopeIdProperty)
-      }
-    },
-    VariableDeclarator(path) {
-      const { node } = path
-      if (t.isIdentifier(node.id) && node.id.name.match(/^\$/)) {
-        if (
-          t.isCallExpression(node.init) &&
-          t.isIdentifier(node.init.callee) &&
-          node.init.callee.name.match(/\$?(reactive|computed|ref)/)
-        )
-          return
-        node.init = createFrameCall(FrameApi.reactive, [node.init || t.identifier('')])
       }
     },
   }

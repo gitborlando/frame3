@@ -1,5 +1,13 @@
 # vite-plugin-frame3
 
+## 1.1.8
+
+### Patch Changes
+
+- return 不加.value && 新增 v()手动加.value
+- Updated dependencies
+  - frame3-compiler-sfc@1.1.6
+
 ## 1.1.7
 
 ### Patch Changes

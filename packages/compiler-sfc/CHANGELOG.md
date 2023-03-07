@@ -1,5 +1,11 @@
 # @frame3/compiler-sfc
 
+## 1.1.6
+
+### Patch Changes
+
+- return 不加.value && 新增 v()手动加.value
+
 ## 1.1.5
 
 ### Patch Changes
