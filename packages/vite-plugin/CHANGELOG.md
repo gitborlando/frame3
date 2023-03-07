@@ -1,5 +1,11 @@
 # vite-plugin-frame3
 
+## 1.1.10
+
+### Patch Changes
+
+- 修复重复加 scope-id
+
 ## 1.1.9
 
 ### Patch Changes
