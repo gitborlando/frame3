@@ -154,12 +154,17 @@ export function ref<HTMLTagName extends keyof HTMLElementTagNameMap>(tagName: IC
 }
 
 /** 转到$reactive */
+export function ref$<ExposedObject extends Record<string, any>>(): ExposedObject | undefined
 export function ref$(tagName: IComponentFunction): IComponentInstance | undefined
 export function ref$<K extends keyof HTMLElementTagNameMap>(tagName: K): HTMLElementTagNameMap[K] | undefined
-export function ref$<HTMLTagName extends keyof HTMLElementTagNameMap>(tagName: IComponentFunction | HTMLTagName) {
-  return typeof tagName === 'function'
-    ? reactive$<IComponentInstance>()
-    : reactive$<HTMLElementTagNameMap[HTMLTagName]>()
+export function ref$<ExposedObject extends Record<string, any>, HTMLTagName extends keyof HTMLElementTagNameMap>(
+  tagName?: IComponentFunction | HTMLTagName
+) {
+  return tagName
+    ? typeof tagName === 'function'
+      ? reactive$<IComponentInstance>()
+      : reactive$<HTMLElementTagNameMap[HTMLTagName]>()
+    : reactive$<ExposedObject>()
 }
 
 export function v<T>(reactiver: T) {
