@@ -8,7 +8,9 @@ export const Counter = () => {
 
   return (
     <>
-      {$outOfBound && <span classes={'outOfBound'}>out of bound</span>}
+      <span style-show={$outOfBound} classes={'outOfBound'}>
+        out of bound
+      </span>
       <Flex classes={['container', $outOfBound && 'outOfBound']}>
         <Flex classes={'operator'} onClick={() => !$outOfBound && setSize($size - 1)}>
           -

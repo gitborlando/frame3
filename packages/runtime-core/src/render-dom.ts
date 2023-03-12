@@ -103,8 +103,17 @@ export function setVnodePropsToDomAttribute(preVnode: IElementVnode | null, curr
       classes.filter(Boolean).forEach((_class) => el.classList.add(_class))
     } else if (propkey === 'scope-id') {
       el.setAttribute(`scope-${propValue}`, '')
+    } else if (propkey.startsWith('style-')) {
+      specialDealStylePropkey(el, propkey, propValue)
     } else {
       el.setAttribute(propkey, propValue)
     }
   }
+}
+
+function specialDealStylePropkey(el: Element, propkey: string, propValue: any) {
+  if (propkey === 'style-show') {
+    return ((el as any).style.display = !!propValue ? 'revert' : 'none')
+  }
+  return ((el as any).style[propkey.replace(/^style-/, '')] = propValue + '')
 }

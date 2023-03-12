@@ -8,7 +8,7 @@ import { IVnode } from 'frame3-runtime-core/src/types'
 export namespace JSX {
   // TSX won't currently let us define a specialized type for each intrinsic element,
   // since React just has an opaque type, so we have to use just base type here.
-  type Element = (() => IVnode) | IVnode
+  type Element = (<P extends { classes: string | any[] }>(props: P) => IVnode) | IVnode
   // Defining ElementChildrenAttribute lets us type the children passed to an embedded subcomponent
   interface ElementChildrenAttribute {
     children: {}
@@ -797,6 +797,7 @@ export namespace JSX {
     'style-rubyOverhang'?: string | null
     'style-rubyPosition'?: string | null
     'style-scale'?: string | null
+    'style-show'?: any | null
     'style-stopColor'?: string | null
     'style-stopOpacity'?: string | null
     'style-stroke'?: string | null
