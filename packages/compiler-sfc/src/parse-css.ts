@@ -15,7 +15,7 @@ export const parseCss = (css: string) => {
       if (!cssGenerate(prelude).match(/\*/)) {
         ;((prelude as SelectorList).children.last as Selector).children.appendData({
           type: 'AttributeSelector',
-          name: { name: `scope-${scopeId}`, type: 'Identifier' },
+          name: { name: `s-${scopeId}`, type: 'Identifier' },
           matcher: null,
           value: null,
           flags: null,
@@ -53,8 +53,8 @@ export const parseCss = (css: string) => {
       })
     },
   })
-  additionalJsForAddCss.push(`if (!document.querySelector('style[scope-${scopeId}]')) {
-  document.head.insertAdjacentHTML('beforeend', '<style scope-${scopeId}>${cssGenerate(ast)}</style>')
+  additionalJsForAddCss.push(`if (!document.querySelector('style[s-${scopeId}]')) {
+  document.head.insertAdjacentHTML('beforeend', '<style s-${scopeId}>${cssGenerate(ast)}</style>')
 }`)
   return additionalJsForAddCss.join('')
 }

@@ -74,7 +74,7 @@ export function init() {
 }
 
 export function uuid() {
-  return Math.random().toString(36).slice(2, 12)
+  return Math.random().toString(36).slice(2, 8)
 }
 
 export function createFrameCall(

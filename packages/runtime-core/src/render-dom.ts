@@ -102,7 +102,7 @@ export function setVnodePropsToDomAttribute(preVnode: IElementVnode | null, curr
       const classes = Array.isArray(propValue) ? propValue : [propValue]
       classes.filter(Boolean).forEach((_class) => el.classList.add(_class))
     } else if (propkey === 'scope-id') {
-      el.setAttribute(`scope-${propValue}`, '')
+      el.setAttribute(`s-${propValue}`, '')
     } else if (propkey.startsWith('style-')) {
       specialDealStylePropkey(el, propkey, propValue)
     } else {
