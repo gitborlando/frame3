@@ -30,26 +30,26 @@ npx vite
 size.ts
 
 ```ts
-import { $computed } from 'frame3'
+import { computed$ } from 'frame3'
 
-export let $size = 1
-export let $outOfBound = $computed(() => $size >= 100)
+export let size$ = 1
+export let outOfBound$ = computed$(() => size$ >= 100)
 
 export function setSize(s: number) {
-  $size = s
+  size$ = s
 }
 ```
 
 counter.tsx
 
 ```ts
-import { $size, $outOfBound, setSize } from './size'
+import { size$, outOfBound$, setSize } from './size'
 
 export const Counter = () => {
   return (
     <div>
-      <div>{!$outOfBound ? $size : 'out of bound'}</div>
-      <button onClick={() => setSize($size + 1)}>+</button>
+      <div>{!outOfBound$ ? size$ : 'out of bound'}</div>
+      <button onClick={() => setSize(size$ + 1)}>+</button>
     </div>
   )
 }
@@ -76,25 +76,25 @@ frame3 在编译时**除了几种特殊情况, 会给每个带 `$` 的变量加�
 
 ```ts
 // size.ts
-import { $computed, reactive, computed } from 'frame3'
+import { reactive, computed } from 'frame3'
 
-export let $size = reactive(1)
-export let $outOfBound = computed(() => $size.value >= 100)
+export let size$ = reactive(1)
+export let outOfBound$ = computed(() => size$.value >= 100)
 
 export function setSize(s: number) {
-  $size.value = s
+  size$.value = s
 }
 
 // counter.tsx
-import { $size, $outOfBound, setSize } from './size'
+import { size$, outOfBound$, setSize } from './size'
 
 interface IProps {}
 
 export const Counter = ({}: IProps) => {
   return () => (
     <div>
-      <div>{!$outOfBound.value ? $size.value : 'out of bound'}</div>
-      <button onClick={() => setSize($size.value + 1)}>+</button>
+      <div>{!outOfBound$.value ? size$.value : 'out of bound'}</div>
+      <button onClick={() => setSize(size$.value + 1)}>+</button>
     </div>
   )
 }
@@ -112,8 +112,8 @@ export const Counter = ({}: IProps) => {
 
 ```css
 div {
-  width: ('70 * ($size * 0.2 + 1.5)') px;
-  height: ('20 * ($size * 0.2 + 1.5)') px;
+  width: ('70 * (size$ * 0.2 + 1.5)') px;
+  height: ('20 * (size$ * 0.2 + 1.5)') px;
   border-radius: 5px;
   border: 1px solid rgb(0, 0, 0, 0.5);
 }
@@ -126,7 +126,7 @@ frame3 也会编译组件引入的 css 文件, 会把每个带有`(xx)或('xx')`
 effect(() => {
   style.innerHTML = `
     .div {
-      width: `${70 * ($size.value * 0.2 + 1.5)}` px
+      width: `${70 * (size$.value * 0.2 + 1.5)}` px
     } `
 })
 ```
