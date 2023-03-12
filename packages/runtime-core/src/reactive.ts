@@ -34,9 +34,9 @@ export function reactive(value?: unknown) {
  * 即使我们非常清楚其是个对象, 但ts编译器并不知道, 所以要用一点"障眼法"来避免报错. 也就是说, 用`reactive`
  * 需要手动加`.value`, 而`$reactive`不用. 后面的`$computed`, `$ref`同理
  */
-export function $reactive<T>(value: T): T
-export function $reactive<T = any>(): T | undefined
-export function $reactive(value?: unknown) {
+export function reactive$<T>(value: T): T
+export function reactive$<T = any>(): T | undefined
+export function reactive$(value?: unknown) {
   return value
 }
 
@@ -140,7 +140,7 @@ export function computed<T>(callback: () => T): { value: T } {
 }
 
 /** 转到$reactive */
-export function $computed<T>(cb: () => T): T {
+export function computed$<T>(cb: () => T): T {
   return cb()
 }
 
@@ -154,12 +154,12 @@ export function ref<HTMLTagName extends keyof HTMLElementTagNameMap>(tagName: IC
 }
 
 /** 转到$reactive */
-export function $ref(tagName: IComponentFunction): IComponentInstance | undefined
-export function $ref<K extends keyof HTMLElementTagNameMap>(tagName: K): HTMLElementTagNameMap[K] | undefined
-export function $ref<HTMLTagName extends keyof HTMLElementTagNameMap>(tagName: IComponentFunction | HTMLTagName) {
+export function ref$(tagName: IComponentFunction): IComponentInstance | undefined
+export function ref$<K extends keyof HTMLElementTagNameMap>(tagName: K): HTMLElementTagNameMap[K] | undefined
+export function ref$<HTMLTagName extends keyof HTMLElementTagNameMap>(tagName: IComponentFunction | HTMLTagName) {
   return typeof tagName === 'function'
-    ? $reactive<IComponentInstance>()
-    : $reactive<HTMLElementTagNameMap[HTMLTagName]>()
+    ? reactive$<IComponentInstance>()
+    : reactive$<HTMLElementTagNameMap[HTMLTagName]>()
 }
 
 export function v<T>(reactiver: T) {

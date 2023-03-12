@@ -42,10 +42,10 @@ export function addDotValue(js: string) {
 function babelTraverseDotValueOption(): TraverseOptions<t.Node> {
   return {
     Identifier(path) {
-      if (!path.node.name.startsWith('$')) return
+      if (!path.node.name.endsWith('$')) return
       if (path.node.name === '$') return
       if (path.node.name.match(/.value$/)) return
-      if (path.node.name.match(/\$(reactive|computed|ref)/)) return
+      if (path.node.name.match(/(reactive|computed|ref)\$/)) return
       if (t.isImportSpecifier(path.parent)) return
       if (t.isExportSpecifier(path.parent)) return
       if (t.isReturnStatement(path.parent)) return
@@ -64,7 +64,7 @@ function babelTraverseDotValueOption(): TraverseOptions<t.Node> {
         t.isIdentifier(path.parent.value) &&
         path.parent.value.name === path.node.name &&
         t.isStringLiteral(path.parent.key) &&
-        path.parent.key.value.match(/(^\$|^ref$)/)
+        path.parent.key.value.match(/(\$$|^ref$)/)
       )
         return
 
@@ -72,9 +72,9 @@ function babelTraverseDotValueOption(): TraverseOptions<t.Node> {
       path.skip()
     },
     CallExpression(path) {
-      if (t.isIdentifier(path.node.callee) && path.node.callee.name.match(/\$(reactive|computed|ref)/)) {
+      if (t.isIdentifier(path.node.callee) && path.node.callee.name.match(/(reactive|computed|ref)\$/)) {
         const args = path.node.arguments
-        const callee = { $reactive: FrameApi.reactive, $computed: FrameApi.computed, $ref: FrameApi.ref }[
+        const callee = { reactive$: FrameApi.reactive, computed$: FrameApi.computed, ref$: FrameApi.ref }[
           path.node.callee.name
         ]
         path.replaceWith(createFrameCall(callee!, args))
