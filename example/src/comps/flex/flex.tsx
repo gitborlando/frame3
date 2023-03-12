@@ -6,6 +6,7 @@ type IFlex = JSX.HTMLAttributes<any> & {
   layout?: 'h' | 'v' | 'c'
   as?: keyof JSX.IntrinsicElements
   children?: any
+  ref?: any
 }
 
 export const Flex = ({ as = 'div', layout = 'c', classes = [], children, ...rest }: IFlex) => {

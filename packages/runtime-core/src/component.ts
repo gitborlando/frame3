@@ -60,7 +60,7 @@ export function mountComponentVnode(componentVnode: IComponentVnode) {
     componentInstance.update()
   }
 
-  if (props.hasOwnProperty('ref')) props.ref.value = componentInstance
+  if (props.hasOwnProperty('ref') && !props.ref.value) props.ref.value = componentInstance
 }
 
 /**
