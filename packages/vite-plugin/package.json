@@ -1,6 +1,6 @@
 {
   "name": "vite-plugin-frame3",
-  "version": "1.1.10",
+  "version": "1.2.0",
   "description": "A mini front-end framework's vite plugin",
   "type": "module",
   "main": "./index.js",

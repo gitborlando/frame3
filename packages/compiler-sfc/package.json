@@ -1,6 +1,6 @@
 {
   "name": "frame3-compiler-sfc",
-  "version": "1.1.7",
+  "version": "1.2.0",
   "description": "A mini front-end framework's compiler",
   "type": "module",
   "module": "./index.js",

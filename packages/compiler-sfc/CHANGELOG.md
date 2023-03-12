@@ -1,5 +1,11 @@
 # @frame3/compiler-sfc
 
+## 1.2.0
+
+### Minor Changes
+
+- 将响应式标志 $ 移至变量尾部, 特殊处理 jsx 里的 style-xxx, 还有其他一些细小优化
+
 ## 1.1.7
 
 ### Patch Changes

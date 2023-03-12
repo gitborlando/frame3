@@ -1,5 +1,17 @@
 # @frame3/example
 
+## 1.2.0
+
+### Minor Changes
+
+- 将响应式标志 $ 移至变量尾部, 特殊处理 jsx 里的 style-xxx, 还有其他一些细小优化
+
+### Patch Changes
+
+- Updated dependencies
+  - frame3@1.2.0
+  - vite-plugin-frame3@1.2.0
+
 ## 1.1.13
 
 ### Patch Changes
