@@ -7,7 +7,7 @@
 
 - frame 取自 "framework" 的 "frame", 是我两年前写的 [frame.js](https://github.com/gitborlando/Frame) 的第三代
 - frame3 只是长得像 react, 其内核还是 vue3 那套, 换句话说就是 react 的外表, vue 的内心
-- 尽管原理上与 vue3 如出一辙, 但由于一些微不足道的改动, 使得实际开发还是与 vue3 有一点点不同(更好)
+- 尽管原理上与 vue3 如出一辙, 但由于一些细小改动, 使得实际开发还是与 vue3 有一点不同
 - 尽管 frame3 是一个可正常使用(非玩具, 支持 ts)的框架, 但其更大的作用还是作为 vue3 的 mini 版本供开发者研究其原理
 - frame3 源码类型友好(几乎不用`any`), 每个函数都有 tsdoc, 部分有详细注释, 方便食用
 
@@ -40,12 +40,12 @@ export function setSize(s: number) {
 }
 ```
 
-counter.tsx
+button.tsx
 
 ```ts
 import { size$, outOfBound$, setSize } from './size'
 
-export const Counter = () => {
+export const Button = () => {
   return (
     <div>
       <div>{!outOfBound$ ? size$ : 'out of bound'}</div>
@@ -137,11 +137,7 @@ effect(() => {
 
 ### 文档
 
-[文档](https://gitborlando.github.io/blog/#frame3doc)
-
-### 用户
-
-现在还只有我自己(frame3 的文档和我自己的博客是用 frame3 写的)
+[Frame3 文档](./docs/frame3.md)
 
 ### 指南
 
@@ -154,13 +150,11 @@ effect(() => {
 
 框架使用指南 :
 
-- 首先`yarn create vite`创建一个空的原生 ts 的项目 (没用过 vite 的先去学下 vite)
+- 首先`yarn create vite`创建一个空的原生 ts 的项目
 - 然后再`yarn add frame3 vite-plugin-frame3`
-- 在 vite.config.ts 的 plugin 里添加`frame3()` (啥名都行, 反正是默认导出)
+- 在 vite.config.ts 里, 先`import frame3 from vite-plugin-frame3`, 然后在 plugin 里添加`frame3()`
 - 在 tsconfig.json 里添加`"jsx": "preserve"`和`"jsxImportSource": "frame3"` (这两个是对 tsx 进行编译和智能提示的)
-- api 的使用去看文档就行 (其实不用看文档都行, 看两个示例就懂了)
-
-如果有任何问题欢迎提 issue
+- api 的使用去看文档就行
 
 ### 初衷
 
@@ -175,4 +169,4 @@ effect(() => {
 
 ### 最后
 
-欢迎提 issue, 欢迎 pull request, 当然如果你有什么不太重要的新项目, 可以试试 frame3 哦.
+欢迎提建议, 当然如果你有什么不太重要的新项目, 可以试试 frame3 哦.

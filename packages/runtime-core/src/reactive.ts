@@ -32,7 +32,7 @@ export function reactive(value?: unknown) {
 /**
  * 这个函数主要是用于欺骗ts编译器. 因为frame3会自动给每个带`$`的变量加`.value`, 所以在实际使用过程中,
  * 即使我们非常清楚其是个对象, 但ts编译器并不知道, 所以要用一点"障眼法"来避免报错. 也就是说, 用`reactive`
- * 需要手动加`.value`, 而`$reactive`不用. 后面的`$computed`, `$ref`同理
+ * 需要手动加`.value`, 而`reactive$`不用. 后面的`computed$`, `ref$`同理
  */
 export function reactive$<T>(value: T): T
 export function reactive$<T = any>(): T | undefined
@@ -139,7 +139,7 @@ export function computed<T>(callback: () => T): { value: T } {
   return result
 }
 
-/** 转到$reactive */
+/** 转到reactive$ */
 export function computed$<T>(cb: () => T): T {
   return cb()
 }
@@ -153,7 +153,7 @@ export function ref<HTMLTagName extends keyof HTMLElementTagNameMap>(tagName: IC
   return typeof tagName === 'function' ? reactive<IComponentInstance>() : reactive<HTMLElementTagNameMap[HTMLTagName]>()
 }
 
-/** 转到$reactive */
+/** 转到reactive$ */
 export function ref$<ExposedObject extends Record<string, any>>(): ExposedObject | undefined
 export function ref$(tagName: IComponentFunction): IComponentInstance | undefined
 export function ref$<K extends keyof HTMLElementTagNameMap>(tagName: K): HTMLElementTagNameMap[K] | undefined
